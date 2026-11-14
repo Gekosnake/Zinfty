@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zinfty Hub — All Your Universe in One Place</title>
+  <style>
+    :root {
+      --bg-page: #f8fbff;
+      --bg-card: #ffffff;
+      --sky-primary: #0ea5e9;
+      --sky-dark: #0284c7;
+      --sky-light: #e0f2fe;
+      --sky-soft: #f0f9ff;
+      --border-color: #bae6fd;
+      --border-subtle: #e2e8f0;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #e0f2fe 0%, #f8fbff 28%, #ffffff 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #38bdf8, #0284c7);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    }
+
+    .domain-pill {
+      font-family: monospace;
+      font-size: 0.82rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: var(--sky-soft);
+      color: var(--sky-dark);
+      border: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 64px 0 40px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      color: var(--sky-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .hero h1 span {
+      color: var(--sky-primary);
+    }
+
+    .hero p {
+      color: var(--text-sub);
+      font-size: 1.05rem;
+      max-width: 540px;
+      margin: 0 auto 32px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .search-wrap {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 14px 20px 14px 44px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-color);
+      background: #ffffff;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      outline: none;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.06);
+      transition: all 0.2s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--sky-primary);
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+    }
+
+    .search-wrap span {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sky-primary);
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .cat-btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-sub);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .cat-btn:hover {
+      background: var(--sky-soft);
+      color: var(--sky-dark);
+    }
+
+    .cat-btn.active {
+      background: var(--sky-primary);
+      border-color: var(--sky-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(14, 165, 233, 0.25);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 20px;
+      padding-bottom: 80px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
+      transition: all 0.22s ease;
+    }
+
+    .card:not(.soon):hover {
+      transform: translateY(-4px);
+      border-color: var(--sky-primary);
+      box-shadow: 0 12px 28px rgba(14, 165, 233, 0.14);
+    }
+
+    .card.soon {
+      opacity: 0.7;
+      background: #f8fafc;
+      cursor: default;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--sky-soft);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-live { background: #dcfce7; color: #15803d; }
+    .badge-beta { background: #e0f2fe; color: #0369a1; }
+    .badge-soon { background: #f1f5f9; color: #64748b; }
+
+    .card-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+
+    .card-footer {
+      padding-top: 14px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--sky-dark);
+      font-family: monospace;
+      font-weight: 600;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    footer {
+      border-top: 1px solid var(--border-color);
+      background: #ffffff;
+      padding: 28px 0;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-inner">
+      <a href="https://zinfty.com" class="logo">
+        <span class="logo-icon">∞</span>
+        <span>Zinfty Hub</span>
+      </a>
+      <span class="domain-pill">zinfty.com</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge">ZINFTY ECOSYSTEM</div>
+      <h1>All Your World in <span>Zinfty</span></h1>
+      <p>게임, 실시간 채팅, SNS, AI 서비스까지.<br>Zinfty의 모든 서브도메인 플랫폼을 한곳에서 만나보세요.</p>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <span>🔍</span>
+          <input type="text" id="searchInput" placeholder="서비스명, 설명, 서브도메인 검색..." />
+        </div>
+        <div class="categories">
+          <button class="cat-btn active" data-cat="all">전체</button>
+          <button class="cat-btn" data-cat="social">소셜 & 채팅</button>
+          <button class="cat-btn" data-cat="entertainment">게임 & 엔터</button>
+          <button class="cat-btn" data-cat="tools">유틸리티 & AI</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" id="serviceGrid">
+      <div class="empty-state">Zinfty 서비스를 불러오는 중입니다...</div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© 2026 Zinfty. All services connected via *.zinfty.com</div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getFirestore, collection, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACPThFj93lZ__x6OjIsNQaifL9LAEleGw",
+      authDomain: "zinfty.firebaseapp.com",
+      projectId: "zinfty",
+      storageBucket: "zinfty.firebasestorage.app",
+      messagingSenderId: "858644844927",
+      appId: "1:858644844927:web:43427e13c7c01a8f288a4a",
+      measurementId: "G-04QXTF2YYQ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    let allServices = [];
+    let currentCategory = "all";
+    let searchQuery = "";
+
+    const gridEl = document.getElementById("serviceGrid");
+    const searchInput = document.getElementById("searchInput");
+
+    function escapeHTML(str) {
+      if (!str) return "";
+      return String(str).replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    function sanitizeUrl(url) {
+      try {
+        const parsed = new URL(url);
+        if (parsed.protocol === "https:") {
+          return parsed.href;
+        }
+      } catch (e) {}
+      return "#";
+    }
+
+    function render() {
+      const filtered = allServices.filter(item => {
+        const matchCat = currentCategory === "all" || item.category === currentCategory;
+        const q = searchQuery.toLowerCase();
+        const matchSearch =
+          (item.name || "").toLowerCase().includes(q) ||
+          (item.description || "").toLowerCase().includes(q) ||
+          (item.subdomain || "").toLowerCase().includes(q);
+        return matchCat && matchSearch;
+      });
+
+      if (filtered.length === 0) {
+        gridEl.innerHTML = `<div class="empty-state">표시할 서비스가 없습니다.</div>`;
+        return;
+      }
+
+      gridEl.innerHTML = filtered.map(item => {
+        const isSoon = item.status === "soon";
+        const badgeMap = {
+          live: { text: "LIVE", cls: "badge-live" },
+          beta: { text: "BETA", cls: "badge-beta" },
+          soon: { text: "SOON", cls: "badge-soon" }
+        };
+        const badge = badgeMap[item.status] || badgeMap.soon;
+        const safeUrl = sanitizeUrl(item.url);
+        const tag = isSoon ? "div" : "a";
+        const attrs = isSoon ? "" : `href="${safeUrl}" target="_blank" rel="noopener noreferrer"`;
+
+        return `
+          <${tag} ${attrs} class="card ${isSoon ? "soon" : ""}">
+            <div>
+              <div class="card-top">
+                <div class="card-icon">${escapeHTML(item.icon || "🚀")}</div>
+                <span class="badge ${badge.cls}">${badge.text}</span>
+              </div>
+              <div class="card-title">${escapeHTML(item.name)}</div>
+              <div class="card-desc">${escapeHTML(item.description)}</div>
+            </div>
+            <div class="card-footer">
+              <span>${escapeHTML(item.subdomain)}</span>
+              <span>${isSoon ? "준비중" : "입장하기 →"}</span>
+            </div>
+          </${tag}>
+        `;
+      }).join("");
+    }
+
+    const q = query(
+      collection(db, "services"),
+      where("status", "in", ["live", "beta", "soon"]),
+      orderBy("order", "asc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+      allServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      render();
+    }, (error) => {
+      console.error("데이터 로드 실패:", error);
+      gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오는 중 오류가 발생했습니다.</div>`;
+    });
+
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim();
+      render();
+    });
+
+    document.querySelectorAll(".cat-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentCategory = btn.dataset.cat;
+        render();
+      });
+    });
+  </script>
+</body>
+</html>
