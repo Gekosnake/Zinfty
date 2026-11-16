@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zinfty Hub — All Your Universe in One Place</title>
+  <link rel="icon" type="image/png" href="./logo.png" />
   <style>
     :root {
       --bg-page: #f8fbff;
@@ -90,7 +91,7 @@
     }
 
     header {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
@@ -99,7 +100,7 @@
     }
 
     .header-inner {
-      height: 70px;
+      height: 72px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -113,22 +114,26 @@
       text-decoration: none;
       color: var(--text-main);
       font-weight: 800;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       letter-spacing: -0.02em;
     }
 
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #38bdf8, #0284c7);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
-      overflow: hidden;
+    .brand-logo-img {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .hub-tag {
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: var(--sky-soft);
+      color: var(--sky-dark);
+      border: 1px solid var(--border-color);
+      letter-spacing: 0.04em;
     }
 
     .header-right {
@@ -160,24 +165,29 @@
 
     .hero {
       text-align: center;
-      padding: 56px 0 36px;
+      padding: 48px 0 36px;
     }
 
-    .hero-badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 999px;
+    .hero-logo-wrap {
+      margin: 0 auto 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       background: #ffffff;
+      padding: 12px 26px;
+      border-radius: 22px;
       border: 1px solid var(--border-color);
-      color: var(--sky-dark);
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.08);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.1);
+    }
+
+    .hero-logo-wrap img {
+      height: 76px;
+      width: auto;
+      object-fit: contain;
     }
 
     .hero h1 {
-      font-size: clamp(2.1rem, 5vw, 3.2rem);
+      font-size: clamp(2.0rem, 4.8vw, 3.0rem);
       font-weight: 800;
       letter-spacing: -0.03em;
       color: var(--text-main);
@@ -190,7 +200,7 @@
       color: var(--text-sub);
       font-size: 1.05rem;
       max-width: 540px;
-      margin: 0 auto 30px;
+      margin: 0 auto 28px;
     }
 
     .controls {
@@ -198,7 +208,7 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .search-wrap {
@@ -351,15 +361,24 @@
     }
 
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: 54px;
+      height: 54px;
       border-radius: 14px;
       background: var(--sky-soft);
       border: 1px solid var(--border-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .card-badges {
@@ -468,8 +487,8 @@
     <header>
       <div class="container header-inner">
         <a href="https://zinfty.com" class="logo">
-          <span class="logo-icon">∞</span>
-          <span>Zinfty Hub</span>
+          <img src="./logo.png" alt="Zinfty Logo" class="brand-logo-img" />
+          <span class="hub-tag">HUB</span>
         </a>
         <div class="header-right">
           <span class="stat-pill" id="liveCountPill">운영중 0개</span>
@@ -480,7 +499,9 @@
 
     <main class="container">
       <section class="hero">
-        <div class="hero-badge">ZINFTY ECOSYSTEM</div>
+        <div class="hero-logo-wrap">
+          <img src="./logo.png" alt="Zinfty Ecosystem" />
+        </div>
         <h1>All Your World in <span>Zinfty</span></h1>
         <p>게임, 실시간 채팅, SNS, AI 서비스까지.<br>Zinfty의 모든 서브도메인 플랫폼을 한곳에서 만나보세요.</p>
 
@@ -631,7 +652,6 @@
       return ipData;
     }
 
-    // Firestore 문서 ID에 콜론(:) 등 IPv6 문자가 들어가도 안전하게 변환
     function ipToDocId(ip) {
       return String(ip || "").trim().replace(/[^a-zA-Z0-9._-]/g, "_");
     }
@@ -648,7 +668,6 @@
     async function initVisitorAndSecurity() {
       const ipInfo = await getNetworkAndIPInfo();
 
-      // 1. 실시간 IP 차단 여부 감시 (차단된 상태면 즉시 차단 화면 전환)
       if (ipInfo.ip && ipInfo.ip !== "수집 불가" && ipInfo.ip !== "unknown") {
         const safeIpId = ipToDocId(ipInfo.ip);
         onSnapshot(doc(db, "blocked_ips", safeIpId), (snap) => {
@@ -658,7 +677,6 @@
         }, () => {});
       }
 
-      // 2. 방문자 정보 기록
       try {
         let visitorUuid = localStorage.getItem("zinfty_vid");
         if (!visitorUuid) {
@@ -747,7 +765,7 @@
     initVisitorAndSecurity();
 
     // =========================================================
-    // 서비스 허브 렌더링
+    // 서비스 허브 렌더링 (첨부된 로고 이미지 & 기존 이모지 모두 지원)
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
@@ -775,6 +793,18 @@
         }
       } catch (e) {}
       return "#";
+    }
+
+    // 서비스 로고 이미지 렌더링 헬퍼 (업로드 이미지 Base64, https URL, 또는 폴백 로고)
+    function renderServiceLogo(item) {
+      const imgSrc = item.iconImage || "";
+      if (imgSrc.startsWith("data:image/") || imgSrc.startsWith("https://")) {
+        return `<img src="${escapeHTML(imgSrc)}" alt="${escapeHTML(item.name)}" />`;
+      }
+      if (item.icon) {
+        return escapeHTML(item.icon);
+      }
+      return `<img src="./logo.png" alt="Zinfty" style="padding:8px; object-fit:contain;" />`;
     }
 
     window.toggleFavorite = (e, id) => {
@@ -850,7 +880,7 @@
           <${tag} ${attrs} class="card ${isSoon ? "soon" : ""}">
             <div>
               <div class="card-top">
-                <div class="card-icon">${escapeHTML(item.icon || "🚀")}</div>
+                <div class="card-icon">${renderServiceLogo(item)}</div>
                 <div class="card-badges">
                   <button type="button" class="fav-btn ${isFav ? "active" : ""}" onclick="window.toggleFavorite(event, '${item.id}')" title="즐겨찾기">
                     ${isFav ? "⭐" : "☆"}
