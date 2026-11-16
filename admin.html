@@ -109,7 +109,7 @@
     }
 
     .header-inner {
-      max-width: 1320px;
+      max-width: 1340px;
       margin: 0 auto;
       padding: 0 24px;
       height: 68px;
@@ -168,15 +168,14 @@
     .btn-sm { padding: 6px 11px; font-size: 0.78rem; border-radius: 8px; }
 
     .main-wrap {
-      max-width: 1320px;
+      max-width: 1340px;
       margin: 28px auto;
       padding: 0 24px 80px;
     }
 
-    /* 상단 KPI 요약 카드 */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
       margin-bottom: 24px;
     }
@@ -197,7 +196,7 @@
     }
 
     .kpi-val {
-      font-size: 1.75rem;
+      font-size: 1.7rem;
       font-weight: 800;
       color: var(--sky-dark);
     }
@@ -210,7 +209,7 @@
     }
 
     .tab-btn {
-      padding: 12px 20px;
+      padding: 12px 18px;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: #ffffff;
@@ -319,7 +318,6 @@
       color: var(--text-sub);
     }
 
-    /* 모달 공통 */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -370,7 +368,6 @@
       font-family: monospace;
     }
 
-    /* 타임라인 스타일 */
     .timeline-list {
       margin-top: 18px;
       border-left: 3px solid var(--sky-primary);
@@ -434,12 +431,16 @@
       <!-- KPI 요약 -->
       <div class="kpi-grid">
         <div class="kpi-card">
-          <div class="kpi-label">전체 누적 방문 로그 (무제한)</div>
+          <div class="kpi-label">전체 누적 방문 로그</div>
           <div class="kpi-val" id="kpiTotalVisitors">0</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">고유 IP 사용자 수</div>
           <div class="kpi-val" id="kpiUniqueIps">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">차단된 IP 수</div>
+          <div class="kpi-val" id="kpiBlockedIps" style="color:#ef4444;">0</div>
         </div>
         <div class="kpi-card">
           <div class="kpi-label">등록된 서비스 수</div>
@@ -452,8 +453,9 @@
       </div>
 
       <div class="tabs">
-        <button class="tab-btn active" data-tab="visitorsTab">👁️ 전체 방문자 로그 (무제한)</button>
+        <button class="tab-btn active" data-tab="visitorsTab">👁️ 전체 방문자 로그</button>
         <button class="tab-btn" data-tab="ipTrackerTab">👤 IP·사용자별 행적 추적</button>
+        <button class="tab-btn" data-tab="blockedIpsTab">🚫 IP 차단 관리</button>
         <button class="tab-btn" data-tab="servicesTab">🌐 서브도메인 서비스 & 공지 관리</button>
         <button class="tab-btn" data-tab="whitelistTab">🛡️ 관리자 화이트리스트</button>
       </div>
@@ -484,7 +486,7 @@
                   <th>기기 / OS / 브라우저</th>
                   <th>해상도 / 하드웨어</th>
                   <th>유입 경로 & 클릭 서비스</th>
-                  <th>추적/상세</th>
+                  <th>추적 / IP 차단</th>
                 </tr>
               </thead>
               <tbody id="visitorsTableBody">
@@ -522,7 +524,7 @@
                   <th>최초 접속 ~ 최근 접속</th>
                   <th>사용한 기기 / OS / 브라우저</th>
                   <th>관심/클릭한 서비스 이력</th>
-                  <th>정밀 추적</th>
+                  <th>정밀 추적 / 차단</th>
                 </tr>
               </thead>
               <tbody id="ipTrackerTableBody"></tbody>
@@ -531,7 +533,41 @@
         </div>
       </div>
 
-      <!-- 3. 서브도메인 서비스 & 공지 관리 탭 -->
+      <!-- 3. IP 차단 관리 탭 -->
+      <div id="blockedIpsTab" style="display:none;">
+        <div class="panel">
+          <h2>🚫 신규 IP 수동 차단 등록</h2>
+          <form id="blockIpForm" style="display:flex; gap:12px; flex-wrap:wrap;">
+            <input type="text" id="manualBlockIp" placeholder="차단할 IP 주소 (예: 123.45.67.89)" required
+              style="width:240px; padding:11px 14px; border-radius:10px; border:1px solid var(--border-gray); font-family:monospace;" />
+            <input type="text" id="manualBlockReason" placeholder="차단 사유 (예: 비정상 트래픽 / 도배)"
+              style="flex:1; min-width:240px; padding:11px 14px; border-radius:10px; border:1px solid var(--border-gray);" />
+            <button type="submit" class="btn btn-danger">🚫 즉시 IP 차단</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h2>차단된 IP 블랙리스트 목록 (<span id="blockedIpListCount">0</span>건)</h2>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>차단된 IP</th>
+                  <th>차단 사유</th>
+                  <th>차단 시각</th>
+                  <th>처리 관리자</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody id="blockedIpsTableBody">
+                <tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:24px;">차단된 IP가 없습니다.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 서브도메인 서비스 & 공지 관리 탭 -->
       <div id="servicesTab" style="display:none;">
         <div class="panel">
           <h2>📢 허브 상단 실시간 공지 배너 설정</h2>
@@ -619,7 +655,7 @@
         </div>
       </div>
 
-      <!-- 4. 화이트리스트 탭 -->
+      <!-- 5. 화이트리스트 탭 -->
       <div id="whitelistTab" style="display:none;">
         <div class="panel">
           <h2>화이트리스트 구글 계정 추가</h2>
@@ -652,7 +688,7 @@
     </div>
   </div>
 
-  <!-- 1. 단일 방문자 상세 정보 모달 -->
+  <!-- 단일 방문자 상세 모달 -->
   <div id="visitorModal" class="modal-backdrop">
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -663,7 +699,7 @@
     </div>
   </div>
 
-  <!-- 2. IP 사용자별 전체 행적 타임라인 모달 -->
+  <!-- IP 사용자별 전체 행적 타임라인 모달 -->
   <div id="ipTimelineModal" class="modal-backdrop">
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
@@ -711,8 +747,11 @@
     let unsubServices = null;
     let unsubAdmins = null;
     let unsubVisitors = null;
+    let unsubBlockedIps = null;
+
     let allVisitors = [];
     let ipGroupsList = [];
+    let blockedIpMap = new Map(); // rawIp -> blockDoc
     let currentPage = 1;
 
     const authScreen = document.getElementById("authScreen");
@@ -729,6 +768,10 @@
       return String(str).replace(/[&<>"']/g, m => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
       }[m]));
+    }
+
+    function ipToDocId(ip) {
+      return String(ip || "").trim().replace(/[^a-zA-Z0-9._-]/g, "_");
     }
 
     function toMillis(ts) {
@@ -772,6 +815,7 @@
         if (unsubServices) unsubServices();
         if (unsubAdmins) unsubAdmins();
         if (unsubVisitors) unsubVisitors();
+        if (unsubBlockedIps) unsubBlockedIps();
         adminDashboard.style.display = "none";
         authScreen.style.display = "flex";
         return;
@@ -809,7 +853,22 @@
     });
 
     function startRealtimeListeners() {
-      // 1. 전체 방문자 실시간 리스너 (limit 제거 - 전체 무제한 조회)
+      // 1. 차단 IP 실시간 리스너
+      unsubBlockedIps = onSnapshot(collection(db, "blocked_ips"), (snap) => {
+        blockedIpMap.clear();
+        snap.docs.forEach(d => {
+          const data = d.data();
+          if (data.blocked !== false) {
+            blockedIpMap.set(data.ip || d.id, { docId: d.id, ...data });
+          }
+        });
+        document.getElementById("kpiBlockedIps").textContent = blockedIpMap.size.toLocaleString() + "개";
+        renderBlockedIpsTable();
+        renderVisitors();
+        renderIpTracker();
+      });
+
+      // 2. 전체 방문자 실시간 리스너
       const visQuery = query(collection(db, "visitors"), orderBy("visitedAt", "desc"));
       unsubVisitors = onSnapshot(visQuery, (snap) => {
         allVisitors = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -817,8 +876,7 @@
         buildIpGroups();
         renderVisitors();
         renderIpTracker();
-      }, (err) => {
-        console.warn("정렬 쿼리 오류, 전체 컬렉션 직접 조회로 전환:", err);
+      }, () => {
         onSnapshot(collection(db, "visitors"), (snap2) => {
           allVisitors = snap2.docs
             .map(d => ({ id: d.id, ...d.data() }))
@@ -830,7 +888,7 @@
         });
       });
 
-      // 2. 서비스 실시간 리스너
+      // 3. 서비스 실시간 리스너
       const svcQuery = query(collection(db, "services"), orderBy("order", "asc"));
       unsubServices = onSnapshot(svcQuery, (snap) => {
         document.getElementById("kpiTotalServices").textContent = snap.size.toLocaleString();
@@ -865,7 +923,7 @@
         document.getElementById("kpiTotalClicks").textContent = totalClicks.toLocaleString();
       });
 
-      // 3. 허브 공지 로드
+      // 4. 허브 공지 로드
       getDoc(doc(db, "settings", "hub")).then(snap => {
         if (snap.exists()) {
           document.getElementById("hubNoticeText").value = snap.data().noticeText || "";
@@ -873,7 +931,7 @@
         }
       }).catch(() => {});
 
-      // 4. 화이트리스트 리스너
+      // 5. 화이트리스트 리스너
       unsubAdmins = onSnapshot(collection(db, "admins"), (snap) => {
         const tbody = document.getElementById("whitelistTableBody");
         tbody.innerHTML = snap.docs.map(d => {
@@ -899,6 +957,84 @@
           `;
         }).join("");
       });
+    }
+
+    // =========================================================
+    // IP 차단 / 해제 제어 로직
+    // =========================================================
+    window.blockIpAddress = async (ip, defaultReason = "") => {
+      if (!ip || ip === "수집 불가" || ip === "Unknown IP") {
+        alert("유효하지 않은 IP 주소입니다.");
+        return;
+      }
+      const reason = prompt(`[${ip}] 주소를 차단합니다.\n차단 사유를 입력하세요 (취소 시 중단):`, defaultReason || "비정상 접속 / 관리자 차단");
+      if (reason === null) return;
+
+      try {
+        const docId = ipToDocId(ip);
+        await setDoc(doc(db, "blocked_ips", docId), {
+          ip: ip.trim(),
+          blocked: true,
+          reason: reason.trim() || "관리자 차단",
+          blockedBy: currentUserEmail,
+          blockedAt: serverTimestamp()
+        });
+      } catch (err) {
+        alert("IP 차단 실패: " + err.message);
+      }
+    };
+
+    window.unblockIpAddress = async (ip) => {
+      if (!confirm(`[${ip}] 주소의 차단을 해제하시겠습니까?`)) return;
+      try {
+        const docId = ipToDocId(ip);
+        await deleteDoc(doc(db, "blocked_ips", docId));
+      } catch (err) {
+        alert("IP 차단 해제 실패: " + err.message);
+      }
+    };
+
+    document.getElementById("blockIpForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const ip = document.getElementById("manualBlockIp").value.trim();
+      const reason = document.getElementById("manualBlockReason").value.trim() || "관리자 수동 차단";
+      if (!ip) return;
+
+      try {
+        await setDoc(doc(db, "blocked_ips", ipToDocId(ip)), {
+          ip,
+          blocked: true,
+          reason,
+          blockedBy: currentUserEmail,
+          blockedAt: serverTimestamp()
+        });
+        e.target.reset();
+      } catch (err) {
+        alert("IP 등록 오류: " + err.message);
+      }
+    });
+
+    function renderBlockedIpsTable() {
+      const list = Array.from(blockedIpMap.values()).sort((a, b) => toMillis(b.blockedAt) - toMillis(a.blockedAt));
+      document.getElementById("blockedIpListCount").textContent = list.length.toLocaleString();
+      const tbody = document.getElementById("blockedIpsTableBody");
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:24px;">차단된 IP가 없습니다.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => `
+        <tr>
+          <td><code style="font-weight:800; color:#b91c1c; font-size:0.95rem;">${escapeHTML(item.ip)}</code></td>
+          <td>${escapeHTML(item.reason || "-")}</td>
+          <td>${formatTime(item.blockedAt)}</td>
+          <td><small>${escapeHTML(item.blockedBy || "-")}</small></td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="window.unblockIpAddress('${escapeHTML(item.ip)}')">✅ 차단 해제</button>
+          </td>
+        </tr>
+      `).join("");
     }
 
     // =========================================================
@@ -989,11 +1125,13 @@
 
       tbody.innerHTML = filtered.map(g => {
         const clicksArr = Array.from(g.clickedServices);
+        const isBlocked = blockedIpMap.has(g.ip);
         return `
-          <tr>
+          <tr style="${isBlocked ? "background:#fff1f2;" : ""}">
             <td>
-              <code style="font-weight:800; font-size:0.95rem; color:#0284c7;">${escapeHTML(g.ip)}</code>
-              ${g.visitorUuids.size > 1 ? `<span class="status-tag st-soon" title="동일 IP에서 여러 브라우저/기기 사용">기기 ${g.visitorUuids.size}대</span>` : ""}
+              <code style="font-weight:800; font-size:0.95rem; color:${isBlocked ? "#b91c1c" : "#0284c7"};">${escapeHTML(g.ip)}</code>
+              ${isBlocked ? `<span class="status-tag st-blocked">차단됨</span>` : ""}
+              ${g.visitorUuids.size > 1 ? `<span class="status-tag st-soon">기기 ${g.visitorUuids.size}대</span>` : ""}
               <br>
               <small>${escapeHTML(g.country)} ${escapeHTML(g.region)} ${escapeHTML(g.city)}</small><br>
               <small style="color:#64748b;">${escapeHTML(g.isp)}</small>
@@ -1017,7 +1155,12 @@
                 : `<small style="color:#94a3b8;">클릭 기록 없음</small>`}
             </td>
             <td>
-              <button class="btn btn-primary btn-sm" onclick="window.openIpTimeline('${escapeHTML(g.ip)}')">🕵️ 행적 타임라인</button>
+              <div class="actions">
+                <button class="btn btn-primary btn-sm" onclick="window.openIpTimeline('${escapeHTML(g.ip)}')">🕵️ 타임라인</button>
+                ${isBlocked
+                  ? `<button class="btn btn-outline btn-sm" onclick="window.unblockIpAddress('${escapeHTML(g.ip)}')">✅ 해제</button>`
+                  : `<button class="btn btn-danger btn-sm" onclick="window.blockIpAddress('${escapeHTML(g.ip)}')">🚫 차단</button>`}
+              </div>
             </td>
           </tr>
         `;
@@ -1068,7 +1211,7 @@
     });
 
     // =========================================================
-    // 전체 방문자 로그 렌더링 (무제한 조회 + 선택형 페이지네이션)
+    // 전체 방문자 로그 렌더링
     // =========================================================
     function renderVisitors() {
       const kw = document.getElementById("visitorSearchInput").value.trim().toLowerCase();
@@ -1113,40 +1256,48 @@
         paginationBar.innerHTML = `<span>전체 ${filtered.length.toLocaleString()}건 모두 표시 중</span>`;
       }
 
-      tbody.innerHTML = displayList.map(v => `
-        <tr>
-          <td style="white-space:nowrap;">
-            <strong>${formatTime(v.visitedAt)}</strong><br>
-            <small style="color:#64748b;">방문 ${v.visitCount || 1}회차 · 체류 ${formatDuration(v.durationSec)}</small>
-          </td>
-          <td>
-            <code style="font-weight:700; color:#0284c7;">${escapeHTML(v.ip)}</code><br>
-            <small>${escapeHTML(v.country)} ${escapeHTML(v.region)} ${escapeHTML(v.city)}</small><br>
-            <small style="color:#64748b;">${escapeHTML(v.isp)}</small>
-          </td>
-          <td>
-            <span class="status-tag st-beta">${escapeHTML(v.deviceType)}</span>
-            <strong>${escapeHTML(v.os)}</strong><br>
-            <small>${escapeHTML(v.browser)} (${escapeHTML(v.language)})</small>
-          </td>
-          <td>
-            <small>화면: ${escapeHTML(v.screenResolution)} (뷰 ${escapeHTML(v.viewportSize)})</small><br>
-            <small>CPU ${v.cpuCores || "?"}코어 / RAM ${v.deviceMemoryGB || "?"}GB / ${escapeHTML(v.networkType)}</small>
-          </td>
-          <td>
-            <small style="color:#475569;">유입: ${escapeHTML(v.referrer)}</small><br>
-            ${(v.clickedServices && v.clickedServices.length > 0)
-              ? `<small style="color:#15803d; font-weight:700;">클릭: ${escapeHTML(v.clickedServices.join(", "))}</small>`
-              : `<small style="color:#94a3b8;">클릭 없음</small>`}
-          </td>
-          <td>
-            <div class="actions">
-              <button class="btn btn-outline btn-sm" onclick="window.openVisitorDetail('${v.id}')">상세</button>
-              <button class="btn btn-primary btn-sm" onclick="window.openIpTimeline('${escapeHTML(v.ip)}')">IP추적</button>
-            </div>
-          </td>
-        </tr>
-      `).join("");
+      tbody.innerHTML = displayList.map(v => {
+        const isBlocked = blockedIpMap.has(v.ip);
+        return `
+          <tr style="${isBlocked ? "background:#fff1f2;" : ""}">
+            <td style="white-space:nowrap;">
+              <strong>${formatTime(v.visitedAt)}</strong><br>
+              <small style="color:#64748b;">방문 ${v.visitCount || 1}회차 · 체류 ${formatDuration(v.durationSec)}</small>
+            </td>
+            <td>
+              <code style="font-weight:700; color:${isBlocked ? "#b91c1c" : "#0284c7"};">${escapeHTML(v.ip)}</code>
+              ${isBlocked ? `<span class="status-tag st-blocked">차단됨</span>` : ""}
+              <br>
+              <small>${escapeHTML(v.country)} ${escapeHTML(v.region)} ${escapeHTML(v.city)}</small><br>
+              <small style="color:#64748b;">${escapeHTML(v.isp)}</small>
+            </td>
+            <td>
+              <span class="status-tag st-beta">${escapeHTML(v.deviceType)}</span>
+              <strong>${escapeHTML(v.os)}</strong><br>
+              <small>${escapeHTML(v.browser)} (${escapeHTML(v.language)})</small>
+            </td>
+            <td>
+              <small>화면: ${escapeHTML(v.screenResolution)} (뷰 ${escapeHTML(v.viewportSize)})</small><br>
+              <small>CPU ${v.cpuCores || "?"}코어 / RAM ${v.deviceMemoryGB || "?"}GB / ${escapeHTML(v.networkType)}</small>
+            </td>
+            <td>
+              <small style="color:#475569;">유입: ${escapeHTML(v.referrer)}</small><br>
+              ${(v.clickedServices && v.clickedServices.length > 0)
+                ? `<small style="color:#15803d; font-weight:700;">클릭: ${escapeHTML(v.clickedServices.join(", "))}</small>`
+                : `<small style="color:#94a3b8;">클릭 없음</small>`}
+            </td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-outline btn-sm" onclick="window.openVisitorDetail('${v.id}')">상세</button>
+                <button class="btn btn-primary btn-sm" onclick="window.openIpTimeline('${escapeHTML(v.ip)}')">추적</button>
+                ${isBlocked
+                  ? `<button class="btn btn-outline btn-sm" onclick="window.unblockIpAddress('${escapeHTML(v.ip)}')">해제</button>`
+                  : `<button class="btn btn-danger btn-sm" onclick="window.blockIpAddress('${escapeHTML(v.ip)}')">차단</button>`}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
     }
 
     window.changeVisitorPage = (page) => {
@@ -1164,7 +1315,6 @@
       renderVisitors();
     });
 
-    // CSV 내보내기 기능
     function downloadCSV(filename, rows) {
       const csvContent = "\uFEFF" + rows.map(r => r.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -1187,9 +1337,9 @@
     });
 
     document.getElementById("exportIpCsvBtn").addEventListener("click", () => {
-      const header = ["IP", "국가", "지역", "도시", "통신사(ISP)", "총방문횟수", "누적체류(초)", "최초접속", "최근접속", "사용기기", "사용OS", "사용브라우저", "클릭서비스목록"];
+      const header = ["IP", "차단여부", "국가", "지역", "도시", "통신사(ISP)", "총방문횟수", "누적체류(초)", "최초접속", "최근접속", "사용기기", "사용OS", "사용브라우저", "클릭서비스목록"];
       const rows = ipGroupsList.map(g => [
-        g.ip, g.country, g.region, g.city, g.isp, g.logs.length, g.totalDurationSec,
+        g.ip, blockedIpMap.has(g.ip) ? "차단됨" : "정상", g.country, g.region, g.city, g.isp, g.logs.length, g.totalDurationSec,
         formatTime(g.firstSeenTs), formatTime(g.lastSeenTs),
         Array.from(g.devices).join("/"), Array.from(g.oses).join("/"), Array.from(g.browsers).join("/"),
         Array.from(g.clickedServices).join(" / ")
@@ -1201,7 +1351,7 @@
       const v = allVisitors.find(item => item.id === id);
       if (!v) return;
       const fields = [
-        ["IP 주소", v.ip],
+        ["IP 주소", `${v.ip} ${blockedIpMap.has(v.ip) ? "(현재 차단됨)" : ""}`],
         ["국가 / 지역 / 도시", `${v.country} (${v.countryCode}) / ${v.region} / ${v.city}`],
         ["통신사 (ISP / ORG / ASN)", `${v.isp} / ${v.org} (${v.asn})`],
         ["방문자 고유 ID (로컬)", `${v.visitorUuid} (누적 ${v.visitCount}회 방문)`],
@@ -1241,7 +1391,6 @@
       }
     });
 
-    // 공지 저장
     document.getElementById("noticeForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       try {
@@ -1374,7 +1523,7 @@
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         const target = btn.dataset.tab;
-        ["visitorsTab", "ipTrackerTab", "servicesTab", "whitelistTab"].forEach(id => {
+        ["visitorsTab", "ipTrackerTab", "blockedIpsTab", "servicesTab", "whitelistTab"].forEach(id => {
           document.getElementById(id).style.display = (id === target) ? "block" : "none";
         });
       });
