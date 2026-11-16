@@ -109,7 +109,7 @@
     }
 
     .header-inner {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 0 24px;
       height: 68px;
@@ -153,41 +153,61 @@
       text-decoration: none;
     }
 
-    .btn-primary {
-      background: var(--sky-primary);
-      color: #ffffff;
-    }
+    .btn-primary { background: var(--sky-primary); color: #ffffff; }
     .btn-primary:hover { background: var(--sky-dark); }
 
-    .btn-outline {
-      background: #ffffff;
-      border-color: var(--border-gray);
-      color: var(--text-sub);
-    }
+    .btn-outline { background: #ffffff; border-color: var(--border-gray); color: var(--text-sub); }
     .btn-outline:hover { border-color: var(--sky-primary); color: var(--sky-dark); }
 
-    .btn-danger {
-      background: var(--danger-soft);
-      color: #b91c1c;
-    }
+    .btn-danger { background: var(--danger-soft); color: #b91c1c; }
     .btn-danger:hover { background: #fecaca; }
 
     .btn-sm { padding: 6px 11px; font-size: 0.78rem; border-radius: 8px; }
 
     .main-wrap {
-      max-width: 1200px;
-      margin: 32px auto;
+      max-width: 1280px;
+      margin: 28px auto;
       padding: 0 24px 80px;
+    }
+
+    /* 상단 KPI 요약 카드 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 14px rgba(14, 165, 233, 0.05);
+    }
+
+    .kpi-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .kpi-val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--sky-dark);
     }
 
     .tabs {
       display: flex;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 24px;
     }
 
     .tab-btn {
-      padding: 12px 22px;
+      padding: 12px 20px;
       border-radius: 12px;
       border: 1px solid var(--border);
       background: #ffffff;
@@ -206,18 +226,20 @@
       background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 28px;
+      padding: 26px;
       box-shadow: 0 8px 24px rgba(14, 165, 233, 0.06);
       margin-bottom: 24px;
     }
 
     .panel h2 {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       margin-bottom: 18px;
       color: var(--text-main);
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
     }
 
     .form-grid {
@@ -252,19 +274,21 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
     }
 
     th, td {
       text-align: left;
-      padding: 14px 12px;
+      padding: 13px 12px;
       border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
     }
 
     th {
       color: var(--text-sub);
       font-weight: 700;
       background: #f8fafc;
+      white-space: nowrap;
     }
 
     .status-tag {
@@ -272,6 +296,7 @@
       border-radius: 999px;
       font-size: 0.74rem;
       font-weight: 800;
+      display: inline-block;
     }
     .st-live { background: #dcfce7; color: #15803d; }
     .st-beta { background: #e0f2fe; color: #0369a1; }
@@ -279,6 +304,57 @@
     .st-blocked { background: #fee2e2; color: #b91c1c; }
 
     .actions { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    /* 방문자 상세 모달 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      max-width: 720px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .detail-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+
+    .detail-item small {
+      display: block;
+      color: var(--text-sub);
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .detail-item div {
+      font-size: 0.86rem;
+      word-break: break-all;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
@@ -311,12 +387,78 @@
     </header>
 
     <div class="main-wrap">
-      <div class="tabs">
-        <button class="tab-btn active" data-tab="servicesTab">🌐 서브도메인 서비스 관리</button>
-        <button class="tab-btn" data-tab="whitelistTab">🛡️ 관리자 화이트리스트 & 차단</button>
+      <!-- KPI 요약 -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">총 누적 방문 로그</div>
+          <div class="kpi-val" id="kpiTotalVisitors">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">고유 IP / 기기 수</div>
+          <div class="kpi-val" id="kpiUniqueIps">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">등록된 서비스 수</div>
+          <div class="kpi-val" id="kpiTotalServices">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">전체 서비스 누적 클릭</div>
+          <div class="kpi-val" id="kpiTotalClicks">0</div>
+        </div>
       </div>
 
-      <div id="servicesTab">
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="visitorsTab">👁️ 실시간 방문자 분석 로그</button>
+        <button class="tab-btn" data-tab="servicesTab">🌐 서브도메인 서비스 & 공지 관리</button>
+        <button class="tab-btn" data-tab="whitelistTab">🛡️ 관리자 화이트리스트</button>
+      </div>
+
+      <!-- 1. 실시간 방문자 로그 탭 -->
+      <div id="visitorsTab">
+        <div class="panel">
+          <h2>
+            <span>실시간 접속자 상세 트래킹 (최근 200건)</span>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <input type="text" id="visitorSearchInput" placeholder="IP, 국가, 도시, OS, 브라우저 검색..."
+                style="padding:7px 12px; border-radius:8px; border:1px solid var(--border-gray); font-size:0.84rem;" />
+              <button id="clearVisitorsBtn" class="btn btn-danger btn-sm">전체 로그 초기화</button>
+            </div>
+          </h2>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>접속 시각</th>
+                  <th>IP 주소 & 위치/ISP</th>
+                  <th>기기 / OS / 브라우저</th>
+                  <th>해상도 / 하드웨어</th>
+                  <th>유입 경로 & 클릭 서비스</th>
+                  <th>상세</th>
+                </tr>
+              </thead>
+              <tbody id="visitorsTableBody">
+                <tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:30px;">방문자 데이터를 불러오는 중...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. 서브도메인 서비스 & 공지 관리 탭 -->
+      <div id="servicesTab" style="display:none;">
+        <!-- 허브 상단 공지사항 제어 -->
+        <div class="panel">
+          <h2>📢 허브 상단 실시간 공지 배너 설정</h2>
+          <form id="noticeForm" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+            <input type="text" id="hubNoticeText" placeholder="예: 신규 AI 채팅 서비스가 오픈되었습니다!"
+              style="flex:1; min-width:260px; padding:10px 14px; border-radius:10px; border:1px solid var(--border-gray);" />
+            <label style="display:flex; align-items:center; gap:6px; font-size:0.88rem; font-weight:700; cursor:pointer;">
+              <input type="checkbox" id="hubNoticeActive" /> 배너 노출 활성화
+            </label>
+            <button type="submit" class="btn btn-primary">공지 적용</button>
+          </form>
+        </div>
+
         <div class="panel">
           <h2>
             <span id="formTitle">새 서브도메인 서비스 등록</span>
@@ -381,8 +523,8 @@
                   <th>서비스</th>
                   <th>서브도메인 / 링크</th>
                   <th>카테고리</th>
-                  <th>상태</th>
-                  <th>제어 (수정 / 차단 / 삭제)</th>
+                  <th>상태 / 클릭</th>
+                  <th>제어</th>
                 </tr>
               </thead>
               <tbody id="servicesTableBody"></tbody>
@@ -391,6 +533,7 @@
         </div>
       </div>
 
+      <!-- 3. 화이트리스트 탭 -->
       <div id="whitelistTab" style="display:none;">
         <div class="panel">
           <h2>화이트리스트 구글 계정 추가</h2>
@@ -412,7 +555,7 @@
                   <th>구글 이메일</th>
                   <th>메모</th>
                   <th>권한 상태</th>
-                  <th>관리 (차단 토글 / 삭제)</th>
+                  <th>관리</th>
                 </tr>
               </thead>
               <tbody id="whitelistTableBody"></tbody>
@@ -423,6 +566,17 @@
     </div>
   </div>
 
+  <!-- 방문자 상세 정보 모달 -->
+  <div id="visitorModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-size:1.15rem;">🔍 방문자 디지털 핑거프린트 & 상세 로그</h3>
+        <button id="closeVisitorModal" class="btn btn-outline btn-sm">닫기 ✕</button>
+      </div>
+      <div id="visitorModalBody" class="detail-grid"></div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -430,8 +584,8 @@
       getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import {
-      getFirestore, collection, doc, getDoc, setDoc, addDoc, updateDoc, deleteDoc,
-      onSnapshot, query, orderBy, serverTimestamp
+      getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+      onSnapshot, query, orderBy, limit, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -456,6 +610,8 @@
     let currentUserEmail = null;
     let unsubServices = null;
     let unsubAdmins = null;
+    let unsubVisitors = null;
+    let allVisitors = [];
 
     const authScreen = document.getElementById("authScreen");
     const adminDashboard = document.getElementById("adminDashboard");
@@ -467,10 +623,18 @@
     }
 
     function escapeHTML(str) {
-      if (!str) return "";
+      if (str === null || str === undefined) return "";
       return String(str).replace(/[&<>"']/g, m => ({
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
       }[m]));
+    }
+
+    function formatTime(ts) {
+      if (!ts) return "-";
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      return d.toLocaleString("ko-KR", {
+        month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit"
+      });
     }
 
     document.getElementById("loginBtn").addEventListener("click", async () => {
@@ -489,6 +653,7 @@
         currentUserEmail = null;
         if (unsubServices) unsubServices();
         if (unsubAdmins) unsubAdmins();
+        if (unsubVisitors) unsubVisitors();
         adminDashboard.style.display = "none";
         authScreen.style.display = "flex";
         return;
@@ -499,12 +664,16 @@
         const adminSnap = await getDoc(adminRef);
 
         if (!adminSnap.exists()) {
-          await setDoc(adminRef, {
-            email: user.email,
-            memo: user.email === MASTER_EMAIL ? "Master Admin" : "Whitelisted Admin",
-            active: true,
-            createdAt: serverTimestamp()
-          });
+          if (user.email === MASTER_EMAIL) {
+            await setDoc(adminRef, {
+              email: user.email,
+              memo: "Master Admin",
+              active: true,
+              createdAt: serverTimestamp()
+            });
+          } else {
+            throw new Error("화이트리스트 미등록");
+          }
         } else if (adminSnap.data().active === false && user.email !== MASTER_EMAIL) {
           throw new Error("차단된 관리자 계정입니다.");
         }
@@ -522,11 +691,27 @@
     });
 
     function startRealtimeListeners() {
+      // 1. 방문자 실시간 리스너
+      const visQuery = query(collection(db, "visitors"), orderBy("visitedAt", "desc"), limit(200));
+      unsubVisitors = onSnapshot(visQuery, (snap) => {
+        allVisitors = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        document.getElementById("kpiTotalVisitors").textContent = allVisitors.length.toLocaleString() + (allVisitors.length >= 200 ? "+" : "");
+        const uniqueIps = new Set(allVisitors.map(v => v.ip).filter(Boolean));
+        document.getElementById("kpiUniqueIps").textContent = uniqueIps.size.toLocaleString();
+        renderVisitors();
+      }, (err) => {
+        console.error("방문자 로드 오류:", err);
+      });
+
+      // 2. 서비스 실시간 리스너
       const svcQuery = query(collection(db, "services"), orderBy("order", "asc"));
       unsubServices = onSnapshot(svcQuery, (snap) => {
+        document.getElementById("kpiTotalServices").textContent = snap.size.toLocaleString();
+        let totalClicks = 0;
         const tbody = document.getElementById("servicesTableBody");
         tbody.innerHTML = snap.docs.map(d => {
           const s = d.data();
+          totalClicks += Number(s.clicks) || 0;
           const stClass = `st-${s.status || "soon"}`;
           return `
             <tr>
@@ -534,7 +719,10 @@
               <td><strong>${escapeHTML(s.icon)} ${escapeHTML(s.name)}</strong><br><small style="color:#64748b;">${escapeHTML(s.description)}</small></td>
               <td><code>${escapeHTML(s.subdomain)}</code><br><a href="${escapeHTML(s.url)}" target="_blank" style="font-size:0.78rem;color:#0284c7;">${escapeHTML(s.url)}</a></td>
               <td>${escapeHTML(s.category)}</td>
-              <td><span class="status-tag ${stClass}">${escapeHTML((s.status || "").toUpperCase())}</span></td>
+              <td>
+                <span class="status-tag ${stClass}">${escapeHTML((s.status || "").toUpperCase())}</span>
+                <div style="font-size:0.76rem; color:#64748b; margin-top:4px;">클릭: ${(Number(s.clicks) || 0).toLocaleString()}회</div>
+              </td>
               <td>
                 <div class="actions">
                   <button class="btn btn-outline btn-sm" onclick="window.editService('${d.id}')">수정</button>
@@ -547,8 +735,18 @@
             </tr>
           `;
         }).join("");
+        document.getElementById("kpiTotalClicks").textContent = totalClicks.toLocaleString();
       });
 
+      // 3. 허브 공지 로드
+      getDoc(doc(db, "settings", "hub")).then(snap => {
+        if (snap.exists()) {
+          document.getElementById("hubNoticeText").value = snap.data().noticeText || "";
+          document.getElementById("hubNoticeActive").checked = !!snap.data().noticeActive;
+        }
+      }).catch(() => {});
+
+      // 4. 화이트리스트 리스너
       unsubAdmins = onSnapshot(collection(db, "admins"), (snap) => {
         const tbody = document.getElementById("whitelistTableBody");
         tbody.innerHTML = snap.docs.map(d => {
@@ -576,6 +774,115 @@
       });
     }
 
+    function renderVisitors() {
+      const kw = document.getElementById("visitorSearchInput").value.trim().toLowerCase();
+      const filtered = allVisitors.filter(v => {
+        if (!kw) return true;
+        return [v.ip, v.country, v.city, v.isp, v.os, v.browser, v.deviceType, v.referrer]
+          .some(val => String(val || "").toLowerCase().includes(kw));
+      });
+
+      const tbody = document.getElementById("visitorsTableBody");
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#94a3b8; padding:30px;">일치하는 방문자 로그가 없습니다.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(v => `
+        <tr>
+          <td style="white-space:nowrap;">
+            <strong>${formatTime(v.visitedAt)}</strong><br>
+            <small style="color:#64748b;">방문 ${v.visitCount || 1}회차 · 체류 ${v.durationSec || 0}초</small>
+          </td>
+          <td>
+            <code style="font-weight:700; color:#0284c7;">${escapeHTML(v.ip)}</code><br>
+            <small>${escapeHTML(v.country)} ${escapeHTML(v.region)} ${escapeHTML(v.city)}</small><br>
+            <small style="color:#64748b;">${escapeHTML(v.isp)}</small>
+          </td>
+          <td>
+            <span class="status-tag st-beta">${escapeHTML(v.deviceType)}</span>
+            <strong>${escapeHTML(v.os)}</strong><br>
+            <small>${escapeHTML(v.browser)} (${escapeHTML(v.language)})</small>
+          </td>
+          <td>
+            <small>화면: ${escapeHTML(v.screenResolution)} (뷰 ${escapeHTML(v.viewportSize)})</small><br>
+            <small>CPU ${v.cpuCores || "?"}코어 / RAM ${v.deviceMemoryGB || "?"}GB / ${escapeHTML(v.networkType)}</small>
+          </td>
+          <td>
+            <small style="color:#475569;">유입: ${escapeHTML(v.referrer)}</small><br>
+            ${(v.clickedServices && v.clickedServices.length > 0)
+              ? `<small style="color:#15803d; font-weight:700;">클릭: ${escapeHTML(v.clickedServices.join(", "))}</small>`
+              : `<small style="color:#94a3b8;">클릭 없음</small>`}
+          </td>
+          <td>
+            <button class="btn btn-outline btn-sm" onclick="window.openVisitorDetail('${v.id}')">상세</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    document.getElementById("visitorSearchInput").addEventListener("input", renderVisitors);
+
+    window.openVisitorDetail = (id) => {
+      const v = allVisitors.find(item => item.id === id);
+      if (!v) return;
+      const fields = [
+        ["IP 주소", v.ip],
+        ["국가 / 지역 / 도시", `${v.country} (${v.countryCode}) / ${v.region} / ${v.city}`],
+        ["통신사 (ISP / ORG / ASN)", `${v.isp} / ${v.org} (${v.asn})`],
+        ["방문자 고유 ID (로컬)", `${v.visitorUuid} (누적 ${v.visitCount}회 방문)`],
+        ["기기 유형 / OS", `${v.deviceType} / ${v.os} / ${v.platformVersion}`],
+        ["브라우저", `${v.browser} ${(v.uaBrands || []).join(", ")}`],
+        ["해상도 / 뷰포트 / 배율", `${v.screenResolution} / ${v.viewportSize} / ${v.pixelRatio}x (${v.colorDepth}bit)`],
+        ["CPU / 메모리 / 터치", `${v.cpuCores || "-"}코어 / ${v.deviceMemoryGB || "-"}GB / 터치포인트 ${v.maxTouchPoints}`],
+        ["GPU 그래픽카드", `${v.gpuVendor} — ${v.gpuRenderer}`],
+        ["언어 / 타임존", `${v.language} (${(v.languages || []).join(", ")}) / ${v.timezone}`],
+        ["네트워크 상태", `${v.networkType} (다운링크 ${v.downlinkMbps || "-"}Mbps, RTT ${v.rttMs || "-"}ms)`],
+        ["유입 경로 (Referrer)", v.referrer],
+        ["접속 URL & UTM", `${v.entryUrl} ${v.utmSource ? `[UTM: ${v.utmSource}/${v.utmMedium}/${v.utmCampaign}]` : ""}`],
+        ["클릭한 서비스 목록", (v.clickedServices && v.clickedServices.length) ? v.clickedServices.join(", ") : "없음"],
+        ["전체 User-Agent", v.userAgent]
+      ];
+
+      document.getElementById("visitorModalBody").innerHTML = fields.map(([k, val]) => `
+        <div class="detail-item">
+          <small>${escapeHTML(k)}</small>
+          <div>${escapeHTML(val || "-")}</div>
+        </div>
+      `).join("");
+      document.getElementById("visitorModal").style.display = "flex";
+    };
+
+    document.getElementById("closeVisitorModal").addEventListener("click", () => {
+      document.getElementById("visitorModal").style.display = "none";
+    });
+
+    document.getElementById("clearVisitorsBtn").addEventListener("click", async () => {
+      if (!confirm("현재 표시된 방문자 로그를 모두 삭제하시겠습니까?")) return;
+      try {
+        const snap = await getDocs(collection(db, "visitors"));
+        await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+      } catch (err) {
+        alert("삭제 오류: " + err.message);
+      }
+    });
+
+    // 공지 저장
+    document.getElementById("noticeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await setDoc(doc(db, "settings", "hub"), {
+          noticeText: document.getElementById("hubNoticeText").value.trim(),
+          noticeActive: document.getElementById("hubNoticeActive").checked,
+          updatedAt: serverTimestamp(),
+          updatedBy: currentUserEmail
+        });
+        alert("허브 상단 공지사항이 적용되었습니다.");
+      } catch (err) {
+        alert("공지 저장 오류: " + err.message);
+      }
+    });
+
     const serviceForm = document.getElementById("serviceForm");
     serviceForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -597,6 +904,7 @@
         if (editId) {
           await updateDoc(doc(db, "services", editId), payload);
         } else {
+          payload.clicks = 0;
           payload.createdAt = serverTimestamp();
           await addDoc(collection(db, "services"), payload);
         }
@@ -691,8 +999,10 @@
       btn.addEventListener("click", () => {
         document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        document.getElementById("servicesTab").style.display = btn.dataset.tab === "servicesTab" ? "block" : "none";
-        document.getElementById("whitelistTab").style.display = btn.dataset.tab === "whitelistTab" ? "block" : "none";
+        const target = btn.dataset.tab;
+        ["visitorsTab", "servicesTab", "whitelistTab"].forEach(id => {
+          document.getElementById(id).style.display = (id === target) ? "block" : "none";
+        });
       });
     });
   </script>
