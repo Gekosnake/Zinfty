@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zinfty Admin — admin.zinfty.com</title>
-  <link rel="icon" type="image/png" href="./logo.png" />
+  <link id="dynamicFavicon" rel="icon" type="image/png" href="./logo.png" />
   <style>
     :root {
       --bg-page: #f0f9ff;
@@ -639,7 +639,6 @@
           <form id="serviceForm">
             <input type="hidden" id="editServiceId" />
 
-            <!-- 서비스 로고 이미지 첨부 영역 (자동 1:1 정사각형 크롭) -->
             <div class="logo-upload-box">
               <div class="logo-preview-thumb" id="logoPreviewThumb">
                 <img src="./logo.png" alt="기본 로고" />
@@ -780,6 +779,29 @@
   </div>
 
   <script type="module">
+    // 브라우저 탭 파비콘을 1:1 정사각형(Center Crop)으로 찌그러짐 없이 적용
+    (function fixSquareFavicon() {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const size = 64;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        const minSide = Math.min(img.width, img.height);
+        const sx = (img.width - minSide) / 2;
+        const sy = (img.height - minSide) / 2;
+
+        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+
+        const link = document.getElementById("dynamicFavicon");
+        if (link) link.href = canvas.toDataURL("image/png");
+      };
+      img.src = "./logo.png";
+    })();
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import {
@@ -880,7 +902,6 @@
             canvas.height = targetSize;
             const ctx = canvas.getContext("2d");
 
-            // 짧은 변을 기준으로 정사각형 영역 계산 (중앙 크롭)
             const minSide = Math.min(img.width, img.height);
             const sx = (img.width - minSide) / 2;
             const sy = (img.height - minSide) / 2;
