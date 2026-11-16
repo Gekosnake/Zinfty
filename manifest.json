@@ -1,0 +1,25 @@
+{
+  "name": "Zinfty Hub",
+  "short_name": "Zinfty",
+  "description": "게임, 실시간 채팅, SNS, AI 서비스까지 Zinfty의 모든 플랫폼을 한곳에서 만나보세요.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f8fbff",
+  "theme_color": "#0ea5e9",
+  "icons": [
+    {
+      "src": "./logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
