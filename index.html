@@ -2,8 +2,14 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="google-site-verification" content="f0FCzlXebnMKCm73YdsJf9jZqWgwuzkc_ID5RpS9hvs" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Zinfty" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./logo.png" />
   <title>Zinfty Hub — All Your Universe in One Place</title>
   <link id="dynamicFavicon" rel="icon" type="image/png" href="./logo.png" />
   <style>
@@ -143,7 +149,7 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .stat-pill {
@@ -156,15 +162,28 @@
       font-weight: 600;
     }
 
-    .domain-pill {
-      font-family: monospace;
+    .install-app-btn {
       font-size: 0.82rem;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 999px;
-      background: var(--sky-soft);
-      color: var(--sky-dark);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      color: #ffffff;
+      border: none;
       font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.28);
+      transition: transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .install-app-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 540px) {
+      .stat-pill { display: none; }
     }
 
     .hero {
@@ -495,14 +514,14 @@
 
     <header>
       <div class="container header-inner">
-        <a href="https://zinfty.com" class="logo">
+        <a href="./index.html" class="logo">
           <img src="./logo.png" alt="Zinfty" class="header-square-logo" />
           <span>Zinfty</span>
           <span class="hub-tag">HUB</span>
         </a>
         <div class="header-right">
           <span class="stat-pill" id="liveCountPill">운영중 0개</span>
-          <span class="domain-pill">zinfty.com</span>
+          <button type="button" id="installAppBtn" class="install-app-btn">📲 앱 설치</button>
         </div>
       </div>
     </header>
@@ -554,7 +573,54 @@
   </div>
 
   <script type="module">
-    // 브라우저 탭 파비콘을 1:1 정사각형(Center Crop)으로 찌그러짐 없이 적용
+    // =========================================================
+    // 1. PWA 서비스 워커 등록 및 앱 설치 버튼 제어
+    // =========================================================
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch(() => {});
+      });
+    }
+
+    let deferredPrompt = null;
+    const installBtn = document.getElementById("installAppBtn");
+
+    // 이미 앱 모드(standalone)로 실행 중이면 설치 버튼 숨김
+    if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
+      if (installBtn) installBtn.style.display = "none";
+    }
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBtn) installBtn.style.display = "inline-flex";
+    });
+
+    window.addEventListener("appinstalled", () => {
+      deferredPrompt = null;
+      if (installBtn) installBtn.style.display = "none";
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener("click", async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          await deferredPrompt.userChoice;
+          deferredPrompt = null;
+        } else {
+          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+          if (isIOS) {
+            alert("아이폰/아이패드 앱 설치 방법:\n하단 사파리 메뉴의 [공유(□↑)] 버튼을 누른 뒤\n[홈 화면에 추가]를 선택하시면 바탕화면에 앱으로 설치됩니다!");
+          } else {
+            alert("브라우저 우측 상단 메뉴(⋮)에서 [앱 설치] 또는 [홈 화면에 추가]를 누르시면 스마트폰/PC에 Zinfty 앱이 설치됩니다!");
+          }
+        }
+      });
+    }
+
+    // =========================================================
+    // 2. 브라우저 탭 파비콘 1:1 정사각형 자동 크롭
+    // =========================================================
     (function fixSquareFavicon() {
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -798,7 +864,7 @@
     initVisitorAndSecurity();
 
     // =========================================================
-    // 서비스 허브 렌더링
+    // 3. 서비스 허브 렌더링
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
