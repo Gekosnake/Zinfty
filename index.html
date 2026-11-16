@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Zinfty Hub — All Your Universe in One Place</title>
-  <link rel="icon" type="image/png" href="./logo.png" />
+  <link id="dynamicFavicon" rel="icon" type="image/png" href="./logo.png" />
   <style>
     :root {
       --bg-page: #f8fbff;
@@ -118,7 +118,6 @@
       letter-spacing: -0.02em;
     }
 
-    /* 상단 헤더 정사각형 로고 */
     .header-square-logo {
       width: 42px;
       height: 42px;
@@ -172,7 +171,6 @@
       padding: 48px 0 36px;
     }
 
-    /* 히어로 정사각형 로고 카드 */
     .hero-logo-wrap {
       width: 104px;
       height: 104px;
@@ -368,7 +366,6 @@
       margin-bottom: 16px;
     }
 
-    /* 서비스 카드 1:1 정사각형 로고 영역 (여백 없이 꽉 채움) */
     .card-icon {
       width: 56px;
       height: 56px;
@@ -556,6 +553,29 @@
   </div>
 
   <script type="module">
+    // 브라우저 탭 파비콘을 1:1 정사각형(Center Crop)으로 찌그러짐 없이 적용
+    (function fixSquareFavicon() {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => {
+        const size = 64;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+
+        const minSide = Math.min(img.width, img.height);
+        const sx = (img.width - minSide) / 2;
+        const sy = (img.height - minSide) / 2;
+
+        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+
+        const link = document.getElementById("dynamicFavicon");
+        if (link) link.href = canvas.toDataURL("image/png");
+      };
+      img.src = "./logo.png";
+    })();
+
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import {
@@ -777,7 +797,7 @@
     initVisitorAndSecurity();
 
     // =========================================================
-    // 서비스 허브 렌더링 (정사각형 꽉 찬 로고 적용)
+    // 서비스 허브 렌더링
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
