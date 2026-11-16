@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="google-site-verification" content="f0FCzlXebnMKCm73YdsJf9jZqWgwuzkc_ID5RpS9hvs" />
   <meta name="theme-color" content="#0ea5e9" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Zinfty" />
   <link rel="manifest" href="./manifest.json" />
-  <link rel="apple-touch-icon" href="./logo.png" />
-  <title>Zinfty Hub — All Your Universe in One Place</title>
+  <link id="appleTouchIcon" rel="apple-touch-icon" sizes="180x180" href="./logo.png" />
   <link id="dynamicFavicon" rel="icon" type="image/png" href="./logo.png" />
+  <title>Zinfty Hub — All Your Universe in One Place</title>
   <style>
     :root {
       --bg-page: #f8fbff;
@@ -585,7 +586,6 @@
     let deferredPrompt = null;
     const installBtn = document.getElementById("installAppBtn");
 
-    // 이미 앱 모드(standalone)로 실행 중이면 설치 버튼 숨김
     if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true) {
       if (installBtn) installBtn.style.display = "none";
     }
@@ -610,35 +610,43 @@
         } else {
           const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
           if (isIOS) {
-            alert("아이폰/아이패드 앱 설치 방법:\n하단 사파리 메뉴의 [공유(□↑)] 버튼을 누른 뒤\n[홈 화면에 추가]를 선택하시면 바탕화면에 앱으로 설치됩니다!");
+            alert("아이폰/아이패드 앱 설치 방법:\n하단 사파리 메뉴의 [공유(□↑)] 버튼을 누른 뒤\n[홈 화면에 추가]를 선택하시면 바탕화면에 Zinfty 앱 아이콘이 생성됩니다!");
           } else {
-            alert("브라우저 우측 상단 메뉴(⋮)에서 [앱 설치] 또는 [홈 화면에 추가]를 누르시면 스마트폰/PC에 Zinfty 앱이 설치됩니다!");
+            alert("브라우저 우측 상단 메뉴(⋮)에서 [앱 설치] 또는 [홈 화면에 추가]를 누르시면 스마트폰/PC에 Zinfty 앱 아이콘이 생성됩니다!");
           }
         }
       });
     }
 
     // =========================================================
-    // 2. 브라우저 탭 파비콘 1:1 정사각형 자동 크롭
+    // 2. 브라우저 파비콘 및 스마트폰 홈화면 앱 아이콘 1:1 정사각형 적용
     // =========================================================
-    (function fixSquareFavicon() {
+    (function fixSquareAppIcons() {
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.onload = () => {
-        const size = 64;
-        const canvas = document.createElement("canvas");
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext("2d");
-
         const minSide = Math.min(img.width, img.height);
         const sx = (img.width - minSide) / 2;
         const sy = (img.height - minSide) / 2;
 
-        ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+        // 64x64 파비콘용
+        const favCanvas = document.createElement("canvas");
+        favCanvas.width = 64;
+        favCanvas.height = 64;
+        favCanvas.getContext("2d").drawImage(img, sx, sy, minSide, minSide, 0, 0, 64, 64);
+        const favLink = document.getElementById("dynamicFavicon");
+        if (favLink) favLink.href = favCanvas.toDataURL("image/png");
 
-        const link = document.getElementById("dynamicFavicon");
-        if (link) link.href = canvas.toDataURL("image/png");
+        // 180x180 스마트폰 홈 화면 앱 아이콘용 (iOS/Android 고해상도)
+        const appCanvas = document.createElement("canvas");
+        appCanvas.width = 180;
+        appCanvas.height = 180;
+        const appCtx = appCanvas.getContext("2d");
+        appCtx.fillStyle = "#ffffff";
+        appCtx.fillRect(0, 0, 180, 180);
+        appCtx.drawImage(img, sx, sy, minSide, minSide, 0, 0, 180, 180);
+        const appleLink = document.getElementById("appleTouchIcon");
+        if (appleLink) appleLink.href = appCanvas.toDataURL("image/png");
       };
       img.src = "./logo.png";
     })();
