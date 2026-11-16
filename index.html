@@ -85,6 +85,7 @@
       justify-content: center;
       font-size: 1.25rem;
       box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+      overflow: hidden;
     }
 
     .header-right {
@@ -478,7 +479,7 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import {
       getFirestore, collection, doc, addDoc, updateDoc, onSnapshot,
-      query, orderBy, serverTimestamp, increment, arrayUnion
+      query, where, orderBy, serverTimestamp, increment, arrayUnion
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -557,7 +558,6 @@
       };
 
       try {
-        // 1차: ipwho.is (무료, 키 불필요, HTTPS 지원, 위치/ISP 포함)
         const res = await fetch("https://ipwho.is/");
         const json = await res.json();
         if (json && json.success) {
@@ -577,7 +577,6 @@
       } catch (e) {}
 
       try {
-        // 2차 백업: ipify (IP만이라도 확실히 확보)
         const res2 = await fetch("https://api.ipify.org?format=json");
         const json2 = await res2.json();
         if (json2?.ip) ipData.ip = json2.ip;
@@ -588,7 +587,6 @@
 
     async function collectAndLogVisitor() {
       try {
-        // 재방문 식별용 로컬 스토리지 ID & 방문 카운트
         let visitorUuid = localStorage.getItem("zinfty_vid");
         if (!visitorUuid) {
           visitorUuid = "v_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 9);
@@ -602,7 +600,6 @@
         const gpu = getGPUInfo();
         const ipInfo = await getNetworkAndIPInfo();
 
-        // Client Hints (지원 브라우저에서 추가 세부 OS/모델 정보 확보)
         let uaBrands = [];
         let platformVersion = "";
         if (navigator.userAgentData) {
@@ -619,7 +616,6 @@
         const visitorPayload = {
           visitorUuid,
           visitCount,
-          // 네트워크 & IP 위치 (권한 팝업 없음)
           ip: ipInfo.ip,
           country: ipInfo.country,
           countryCode: ipInfo.countryCode,
@@ -628,14 +624,12 @@
           isp: ipInfo.isp,
           org: ipInfo.org,
           asn: ipInfo.asn,
-          // 기기 & 브라우저
           deviceType,
           os,
           platformVersion: platformVersion || navigator.platform || "-",
           browser,
           uaBrands,
           userAgent: ua,
-          // 하드웨어 & 디스플레이
           screenResolution: `${screen.width}x${screen.height}`,
           viewportSize: `${window.innerWidth}x${window.innerHeight}`,
           colorDepth: screen.colorDepth || 24,
@@ -645,18 +639,15 @@
           maxTouchPoints: navigator.maxTouchPoints || 0,
           gpuVendor: gpu.vendor,
           gpuRenderer: gpu.renderer,
-          // 환경 & 언어 & 시간대
           language: navigator.language || "-",
           languages: navigator.languages || [],
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || ipInfo.timezone,
           cookiesEnabled: navigator.cookieEnabled,
           doNotTrack: navigator.doNotTrack || "unspecified",
           darkModePreferred: window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches,
-          // 네트워크 상태
           networkType: conn?.effectiveType || "unknown",
           downlinkMbps: conn?.downlink || null,
           rttMs: conn?.rtt || null,
-          // 유입 경로 & 페이지 정보
           entryUrl: window.location.href,
           referrer: document.referrer || "직접 접속 (Direct)",
           utmSource: urlParams.get("utm_source") || "",
@@ -674,7 +665,6 @@
       }
     }
 
-    // 페이지 이탈 시 체류 시간 업데이트
     window.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden" && currentVisitorDocId) {
         const sec = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
@@ -685,7 +675,7 @@
     collectAndLogVisitor();
 
     // =========================================================
-    // 2. 서비스 허브 렌더링 & 오류 완전 수정
+    // 2. 서비스 허브 렌더링 (보안 규칙 일치 + 인덱스 자동 폴백)
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
@@ -728,9 +718,7 @@
     };
 
     window.trackServiceClick = (id, name, subdomain) => {
-      // 서비스 클릭 수 증가
       updateDoc(doc(db, "services", id), { clicks: increment(1) }).catch(() => {});
-      // 방문자 로그에 클릭한 서비스 기록
       if (currentVisitorDocId) {
         updateDoc(doc(db, "visitors", currentVisitorDocId), {
           clickedServices: arrayUnion(`${name} (${subdomain})`)
@@ -758,7 +746,6 @@
         return matchCat && matchSearch;
       });
 
-      // 정렬
       filtered.sort((a, b) => {
         if (sortBy === "popular") return (Number(b.clicks) || 0) - (Number(a.clicks) || 0);
         if (sortBy === "name") return (a.name || "").localeCompare(b.name || "", "ko");
@@ -809,21 +796,29 @@
       }).join("");
     }
 
-    // 복합 인덱스 오류를 방지하기 위해 단일 orderBy 쿼리 사용
-    const q = query(collection(db, "services"), orderBy("order", "asc"));
+    // 1차: 보안 규칙과 일치하는 where + orderBy 쿼리 시도
+    const primaryQuery = query(
+      collection(db, "services"),
+      where("status", "in", ["live", "beta", "soon"]),
+      orderBy("order", "asc")
+    );
 
-    onSnapshot(q, (snapshot) => {
+    onSnapshot(primaryQuery, (snapshot) => {
       allServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       render();
     }, (error) => {
-      console.warn("정렬 쿼리 오류, 기본 컬렉션 조회로 전환:", error);
-      // order 필드가 없는 문서가 있거나 인덱스 문제 시 Fallback
-      onSnapshot(collection(db, "services"), (snap) => {
+      // 복합 인덱스가 아직 생성되지 않은 경우(failed-precondition) orderBy를 제외한 쿼리로 자동 전환 (정렬은 클라이언트에서 수행)
+      console.warn("복합 인덱스 미생성으로 기본 필터 쿼리로 자동 전환:", error.message);
+      const fallbackQuery = query(
+        collection(db, "services"),
+        where("status", "in", ["live", "beta", "soon"])
+      );
+      onSnapshot(fallbackQuery, (snap) => {
         allServices = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         render();
       }, (err2) => {
-        console.error("최종 데이터 로드 실패:", err2);
-        gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오지 못했습니다. (Firestore 보안 규칙의 services read 권한을 확인하세요)</div>`;
+        console.error("서비스 데이터 로드 실패:", err2);
+        gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오는 중 오류가 발생했습니다. (${escapeHTML(err2.code || "권한 확인 필요")})</div>`;
       });
     });
 
