@@ -35,8 +35,19 @@
       padding: 0 24px;
     }
 
+    /* 상단 공지 배너 */
+    .notice-bar {
+      background: linear-gradient(90deg, #0284c7, #0ea5e9);
+      color: #ffffff;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      text-align: center;
+      display: none;
+    }
+
     header {
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
       position: sticky;
@@ -49,6 +60,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .logo {
@@ -75,6 +87,22 @@
       box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-pill {
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: var(--text-sub);
+      border: 1px solid var(--border-subtle);
+      font-weight: 600;
+    }
+
     .domain-pill {
       font-family: monospace;
       font-size: 0.82rem;
@@ -83,12 +111,12 @@
       background: var(--sky-soft);
       color: var(--sky-dark);
       border: 1px solid var(--border-color);
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .hero {
       text-align: center;
-      padding: 64px 0 40px;
+      padding: 56px 0 36px;
     }
 
     .hero-badge {
@@ -120,7 +148,7 @@
       color: var(--text-sub);
       font-size: 1.05rem;
       max-width: 540px;
-      margin: 0 auto 32px;
+      margin: 0 auto 30px;
     }
 
     .controls {
@@ -128,18 +156,18 @@
       flex-direction: column;
       align-items: center;
       gap: 16px;
-      margin-bottom: 40px;
+      margin-bottom: 28px;
     }
 
     .search-wrap {
       width: 100%;
-      max-width: 480px;
+      max-width: 520px;
       position: relative;
     }
 
     .search-wrap input {
       width: 100%;
-      padding: 14px 20px 14px 44px;
+      padding: 14px 44px;
       border-radius: 14px;
       border: 1.5px solid var(--border-color);
       background: #ffffff;
@@ -155,7 +183,7 @@
       box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
     }
 
-    .search-wrap span {
+    .search-wrap .search-icon {
       position: absolute;
       left: 16px;
       top: 50%;
@@ -163,11 +191,36 @@
       color: var(--sky-primary);
     }
 
+    .clear-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e2e8f0;
+      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: none;
+      color: #475569;
+    }
+
+    .toolbar {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
     .categories {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      justify-content: center;
     }
 
     .cat-btn {
@@ -194,11 +247,33 @@
       box-shadow: 0 4px 10px rgba(14, 165, 233, 0.25);
     }
 
+    .view-options {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sort-select {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-sub);
+      font-size: 0.84rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 20px;
       padding-bottom: 80px;
+    }
+
+    .grid.list-mode {
+      grid-template-columns: 1fr;
     }
 
     .card {
@@ -213,6 +288,7 @@
       justify-content: space-between;
       box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
       transition: all 0.22s ease;
+      position: relative;
     }
 
     .card:not(.soon):hover {
@@ -222,7 +298,7 @@
     }
 
     .card.soon {
-      opacity: 0.7;
+      opacity: 0.72;
       background: #f8fafc;
       cursor: default;
     }
@@ -246,6 +322,31 @@
       font-size: 1.5rem;
     }
 
+    .card-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .fav-btn {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.15s;
+    }
+
+    .fav-btn.active {
+      background: #fef9c3;
+      border-color: #fde047;
+    }
+
     .badge {
       font-size: 0.72rem;
       font-weight: 800;
@@ -262,6 +363,9 @@
       font-size: 1.18rem;
       font-weight: 700;
       margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .card-desc {
@@ -282,11 +386,21 @@
       font-weight: 600;
     }
 
+    .click-stat {
+      font-family: -apple-system, sans-serif;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 500;
+    }
+
     .empty-state {
       grid-column: 1 / -1;
       text-align: center;
       padding: 60px 20px;
       color: var(--text-muted);
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px dashed var(--border-color);
     }
 
     footer {
@@ -301,13 +415,18 @@
 </head>
 <body>
 
+  <div id="noticeBar" class="notice-bar"></div>
+
   <header>
     <div class="container header-inner">
       <a href="https://zinfty.com" class="logo">
         <span class="logo-icon">∞</span>
         <span>Zinfty Hub</span>
       </a>
-      <span class="domain-pill">zinfty.com</span>
+      <div class="header-right">
+        <span class="stat-pill" id="liveCountPill">운영중 0개</span>
+        <span class="domain-pill">zinfty.com</span>
+      </div>
     </div>
   </header>
 
@@ -319,17 +438,31 @@
 
       <div class="controls">
         <div class="search-wrap">
-          <span>🔍</span>
+          <span class="search-icon">🔍</span>
           <input type="text" id="searchInput" placeholder="서비스명, 설명, 서브도메인 검색..." />
-        </div>
-        <div class="categories">
-          <button class="cat-btn active" data-cat="all">전체</button>
-          <button class="cat-btn" data-cat="social">소셜 & 채팅</button>
-          <button class="cat-btn" data-cat="entertainment">게임 & 엔터</button>
-          <button class="cat-btn" data-cat="tools">유틸리티 & AI</button>
+          <button type="button" id="clearSearchBtn" class="clear-btn">✕</button>
         </div>
       </div>
     </section>
+
+    <div class="toolbar">
+      <div class="categories">
+        <button class="cat-btn active" data-cat="all">전체</button>
+        <button class="cat-btn" data-cat="favorites">⭐ 즐겨찾기</button>
+        <button class="cat-btn" data-cat="social">소셜 & 채팅</button>
+        <button class="cat-btn" data-cat="entertainment">게임 & 엔터</button>
+        <button class="cat-btn" data-cat="tools">유틸리티 & AI</button>
+      </div>
+
+      <div class="view-options">
+        <select id="sortSelect" class="sort-select">
+          <option value="order">기본 정렬순</option>
+          <option value="popular">인기 클릭순</option>
+          <option value="name">이름순 (가나다)</option>
+        </select>
+        <button type="button" id="toggleViewBtn" class="cat-btn" title="보기 방식 전환">⊞ 그리드</button>
+      </div>
+    </div>
 
     <section class="grid" id="serviceGrid">
       <div class="empty-state">Zinfty 서비스를 불러오는 중입니다...</div>
@@ -343,7 +476,10 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
-    import { getFirestore, collection, onSnapshot, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import {
+      getFirestore, collection, doc, addDoc, updateDoc, onSnapshot,
+      query, orderBy, serverTimestamp, increment, arrayUnion
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyACPThFj93lZ__x6OjIsNQaifL9LAEleGw",
@@ -359,12 +495,208 @@
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
+    // =========================================================
+    // 1. 무권한 초정밀 방문자 정보 수집 및 Firestore 자동 기록
+    // =========================================================
+    let currentVisitorDocId = null;
+    const pageEnterTime = Date.now();
+
+    function getGPUInfo() {
+      try {
+        const canvas = document.createElement("canvas");
+        const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+        if (!gl) return { vendor: "unknown", renderer: "unknown" };
+        const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+        if (!debugInfo) return { vendor: "masked", renderer: "masked" };
+        return {
+          vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || "unknown",
+          renderer: gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || "unknown"
+        };
+      } catch (e) {
+        return { vendor: "error", renderer: "error" };
+      }
+    }
+
+    function parseUserAgent(ua) {
+      let browser = "Unknown Browser";
+      if (ua.includes("Edg/")) browser = "Microsoft Edge";
+      else if (ua.includes("Whale/")) browser = "Naver Whale";
+      else if (ua.includes("SamsungBrowser/")) browser = "Samsung Internet";
+      else if (ua.includes("OPR/") || ua.includes("Opera")) browser = "Opera";
+      else if (ua.includes("Chrome/") && !ua.includes("Edg/")) browser = "Google Chrome";
+      else if (ua.includes("Safari/") && !ua.includes("Chrome/")) browser = "Apple Safari";
+      else if (ua.includes("Firefox/")) browser = "Mozilla Firefox";
+
+      let os = "Unknown OS";
+      if (ua.includes("Windows NT 10.0")) os = "Windows 10/11";
+      else if (ua.includes("Windows")) os = "Windows";
+      else if (ua.includes("iPhone")) os = "iOS (iPhone)";
+      else if (ua.includes("iPad")) os = "iPadOS";
+      else if (ua.includes("Android")) os = "Android";
+      else if (ua.includes("Mac OS X")) os = "macOS";
+      else if (ua.includes("Linux")) os = "Linux";
+
+      const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
+      const isTablet = /iPad|Tablet/i.test(ua);
+      const deviceType = isTablet ? "Tablet" : (isMobile ? "Mobile" : "Desktop");
+
+      return { browser, os, deviceType };
+    }
+
+    async function getNetworkAndIPInfo() {
+      let ipData = {
+        ip: "수집 불가",
+        country: "-",
+        countryCode: "-",
+        region: "-",
+        city: "-",
+        isp: "-",
+        org: "-",
+        asn: "-",
+        timezone: "-"
+      };
+
+      try {
+        // 1차: ipwho.is (무료, 키 불필요, HTTPS 지원, 위치/ISP 포함)
+        const res = await fetch("https://ipwho.is/");
+        const json = await res.json();
+        if (json && json.success) {
+          ipData = {
+            ip: json.ip || "unknown",
+            country: json.country || "-",
+            countryCode: json.country_code || "-",
+            region: json.region || "-",
+            city: json.city || "-",
+            isp: json.connection?.isp || "-",
+            org: json.connection?.org || "-",
+            asn: json.connection?.asn ? `AS${json.connection.asn}` : "-",
+            timezone: json.timezone?.id || "-"
+          };
+          return ipData;
+        }
+      } catch (e) {}
+
+      try {
+        // 2차 백업: ipify (IP만이라도 확실히 확보)
+        const res2 = await fetch("https://api.ipify.org?format=json");
+        const json2 = await res2.json();
+        if (json2?.ip) ipData.ip = json2.ip;
+      } catch (e) {}
+
+      return ipData;
+    }
+
+    async function collectAndLogVisitor() {
+      try {
+        // 재방문 식별용 로컬 스토리지 ID & 방문 카운트
+        let visitorUuid = localStorage.getItem("zinfty_vid");
+        if (!visitorUuid) {
+          visitorUuid = "v_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 9);
+          localStorage.setItem("zinfty_vid", visitorUuid);
+        }
+        const visitCount = (Number(localStorage.getItem("zinfty_vcount")) || 0) + 1;
+        localStorage.setItem("zinfty_vcount", String(visitCount));
+
+        const ua = navigator.userAgent || "";
+        const { browser, os, deviceType } = parseUserAgent(ua);
+        const gpu = getGPUInfo();
+        const ipInfo = await getNetworkAndIPInfo();
+
+        // Client Hints (지원 브라우저에서 추가 세부 OS/모델 정보 확보)
+        let uaBrands = [];
+        let platformVersion = "";
+        if (navigator.userAgentData) {
+          uaBrands = (navigator.userAgentData.brands || []).map(b => `${b.brand} ${b.version}`);
+          try {
+            const highEntropy = await navigator.userAgentData.getHighEntropyValues(["platformVersion", "model", "architecture"]);
+            platformVersion = `${highEntropy.platformVersion || ""} (${highEntropy.architecture || ""}) ${highEntropy.model || ""}`.trim();
+          } catch (e) {}
+        }
+
+        const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const visitorPayload = {
+          visitorUuid,
+          visitCount,
+          // 네트워크 & IP 위치 (권한 팝업 없음)
+          ip: ipInfo.ip,
+          country: ipInfo.country,
+          countryCode: ipInfo.countryCode,
+          region: ipInfo.region,
+          city: ipInfo.city,
+          isp: ipInfo.isp,
+          org: ipInfo.org,
+          asn: ipInfo.asn,
+          // 기기 & 브라우저
+          deviceType,
+          os,
+          platformVersion: platformVersion || navigator.platform || "-",
+          browser,
+          uaBrands,
+          userAgent: ua,
+          // 하드웨어 & 디스플레이
+          screenResolution: `${screen.width}x${screen.height}`,
+          viewportSize: `${window.innerWidth}x${window.innerHeight}`,
+          colorDepth: screen.colorDepth || 24,
+          pixelRatio: window.devicePixelRatio || 1,
+          cpuCores: navigator.hardwareConcurrency || null,
+          deviceMemoryGB: navigator.deviceMemory || null,
+          maxTouchPoints: navigator.maxTouchPoints || 0,
+          gpuVendor: gpu.vendor,
+          gpuRenderer: gpu.renderer,
+          // 환경 & 언어 & 시간대
+          language: navigator.language || "-",
+          languages: navigator.languages || [],
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || ipInfo.timezone,
+          cookiesEnabled: navigator.cookieEnabled,
+          doNotTrack: navigator.doNotTrack || "unspecified",
+          darkModePreferred: window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches,
+          // 네트워크 상태
+          networkType: conn?.effectiveType || "unknown",
+          downlinkMbps: conn?.downlink || null,
+          rttMs: conn?.rtt || null,
+          // 유입 경로 & 페이지 정보
+          entryUrl: window.location.href,
+          referrer: document.referrer || "직접 접속 (Direct)",
+          utmSource: urlParams.get("utm_source") || "",
+          utmMedium: urlParams.get("utm_medium") || "",
+          utmCampaign: urlParams.get("utm_campaign") || "",
+          clickedServices: [],
+          durationSec: 0,
+          visitedAt: serverTimestamp()
+        };
+
+        const docRef = await addDoc(collection(db, "visitors"), visitorPayload);
+        currentVisitorDocId = docRef.id;
+      } catch (err) {
+        console.warn("방문자 로그 기록 건너뜀:", err.message);
+      }
+    }
+
+    // 페이지 이탈 시 체류 시간 업데이트
+    window.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden" && currentVisitorDocId) {
+        const sec = Math.max(1, Math.round((Date.now() - pageEnterTime) / 1000));
+        updateDoc(doc(db, "visitors", currentVisitorDocId), { durationSec: sec }).catch(() => {});
+      }
+    });
+
+    collectAndLogVisitor();
+
+    // =========================================================
+    // 2. 서비스 허브 렌더링 & 오류 완전 수정
+    // =========================================================
     let allServices = [];
     let currentCategory = "all";
     let searchQuery = "";
+    let sortBy = "order";
+    let isListMode = false;
+    let favorites = JSON.parse(localStorage.getItem("zinfty_favs") || "[]");
 
     const gridEl = document.getElementById("serviceGrid");
     const searchInput = document.getElementById("searchInput");
+    const clearSearchBtn = document.getElementById("clearSearchBtn");
 
     function escapeHTML(str) {
       if (!str) return "";
@@ -376,31 +708,71 @@
     function sanitizeUrl(url) {
       try {
         const parsed = new URL(url);
-        if (parsed.protocol === "https:") {
+        if (parsed.protocol === "https:" || parsed.protocol === "http:") {
           return parsed.href;
         }
       } catch (e) {}
       return "#";
     }
 
+    window.toggleFavorite = (e, id) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(f => f !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem("zinfty_favs", JSON.stringify(favorites));
+      render();
+    };
+
+    window.trackServiceClick = (id, name, subdomain) => {
+      // 서비스 클릭 수 증가
+      updateDoc(doc(db, "services", id), { clicks: increment(1) }).catch(() => {});
+      // 방문자 로그에 클릭한 서비스 기록
+      if (currentVisitorDocId) {
+        updateDoc(doc(db, "visitors", currentVisitorDocId), {
+          clickedServices: arrayUnion(`${name} (${subdomain})`)
+        }).catch(() => {});
+      }
+    };
+
     function render() {
-      const filtered = allServices.filter(item => {
-        const matchCat = currentCategory === "all" || item.category === currentCategory;
+      const visibleServices = allServices.filter(item => item.status !== "blocked");
+      const liveCount = visibleServices.filter(item => item.status === "live" || item.status === "beta").length;
+      document.getElementById("liveCountPill").textContent = `운영중 ${liveCount}개 / 전체 ${visibleServices.length}개`;
+
+      let filtered = visibleServices.filter(item => {
+        const matchCat =
+          currentCategory === "all" ? true :
+          currentCategory === "favorites" ? favorites.includes(item.id) :
+          item.category === currentCategory;
+
         const q = searchQuery.toLowerCase();
         const matchSearch =
           (item.name || "").toLowerCase().includes(q) ||
           (item.description || "").toLowerCase().includes(q) ||
           (item.subdomain || "").toLowerCase().includes(q);
+
         return matchCat && matchSearch;
       });
 
+      // 정렬
+      filtered.sort((a, b) => {
+        if (sortBy === "popular") return (Number(b.clicks) || 0) - (Number(a.clicks) || 0);
+        if (sortBy === "name") return (a.name || "").localeCompare(b.name || "", "ko");
+        return (Number(a.order) || 999) - (Number(b.order) || 999);
+      });
+
       if (filtered.length === 0) {
-        gridEl.innerHTML = `<div class="empty-state">표시할 서비스가 없습니다.</div>`;
+        gridEl.innerHTML = `<div class="empty-state">조건에 맞는 Zinfty 서비스가 없습니다.</div>`;
         return;
       }
 
       gridEl.innerHTML = filtered.map(item => {
         const isSoon = item.status === "soon";
+        const isFav = favorites.includes(item.id);
         const badgeMap = {
           live: { text: "LIVE", cls: "badge-live" },
           beta: { text: "BETA", cls: "badge-beta" },
@@ -409,49 +781,90 @@
         const badge = badgeMap[item.status] || badgeMap.soon;
         const safeUrl = sanitizeUrl(item.url);
         const tag = isSoon ? "div" : "a";
-        const attrs = isSoon ? "" : `href="${safeUrl}" target="_blank" rel="noopener noreferrer"`;
+        const attrs = isSoon
+          ? ""
+          : `href="${safeUrl}" target="_blank" rel="noopener noreferrer" onclick="window.trackServiceClick('${item.id}', '${escapeHTML(item.name)}', '${escapeHTML(item.subdomain)}')"`;
 
         return `
           <${tag} ${attrs} class="card ${isSoon ? "soon" : ""}">
             <div>
               <div class="card-top">
                 <div class="card-icon">${escapeHTML(item.icon || "🚀")}</div>
-                <span class="badge ${badge.cls}">${badge.text}</span>
+                <div class="card-badges">
+                  <button type="button" class="fav-btn ${isFav ? "active" : ""}" onclick="window.toggleFavorite(event, '${item.id}')" title="즐겨찾기">
+                    ${isFav ? "⭐" : "☆"}
+                  </button>
+                  <span class="badge ${badge.cls}">${badge.text}</span>
+                </div>
               </div>
               <div class="card-title">${escapeHTML(item.name)}</div>
               <div class="card-desc">${escapeHTML(item.description)}</div>
             </div>
             <div class="card-footer">
               <span>${escapeHTML(item.subdomain)}</span>
-              <span>${isSoon ? "준비중" : "입장하기 →"}</span>
+              <span class="click-stat">${Number(item.clicks) > 0 ? `🔥 ${Number(item.clicks).toLocaleString()}회` : (isSoon ? "준비중" : "입장하기 →")}</span>
             </div>
           </${tag}>
         `;
       }).join("");
     }
 
-    const q = query(
-      collection(db, "services"),
-      where("status", "in", ["live", "beta", "soon"]),
-      orderBy("order", "asc")
-    );
+    // 복합 인덱스 오류를 방지하기 위해 단일 orderBy 쿼리 사용
+    const q = query(collection(db, "services"), orderBy("order", "asc"));
 
     onSnapshot(q, (snapshot) => {
       allServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       render();
     }, (error) => {
-      console.error("데이터 로드 실패:", error);
-      gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오는 중 오류가 발생했습니다.</div>`;
+      console.warn("정렬 쿼리 오류, 기본 컬렉션 조회로 전환:", error);
+      // order 필드가 없는 문서가 있거나 인덱스 문제 시 Fallback
+      onSnapshot(collection(db, "services"), (snap) => {
+        allServices = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        render();
+      }, (err2) => {
+        console.error("최종 데이터 로드 실패:", err2);
+        gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오지 못했습니다. (Firestore 보안 규칙의 services read 권한을 확인하세요)</div>`;
+      });
     });
+
+    // 실시간 상단 공지 리스너
+    onSnapshot(doc(db, "settings", "hub"), (snap) => {
+      const noticeBar = document.getElementById("noticeBar");
+      if (snap.exists() && snap.data().noticeActive && snap.data().noticeText) {
+        noticeBar.textContent = "📢 " + snap.data().noticeText;
+        noticeBar.style.display = "block";
+      } else {
+        noticeBar.style.display = "none";
+      }
+    }, () => {});
 
     searchInput.addEventListener("input", (e) => {
       searchQuery = e.target.value.trim();
+      clearSearchBtn.style.display = searchQuery ? "block" : "none";
       render();
     });
 
-    document.querySelectorAll(".cat-btn").forEach(btn => {
+    clearSearchBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      searchQuery = "";
+      clearSearchBtn.style.display = "none";
+      render();
+    });
+
+    document.getElementById("sortSelect").addEventListener("change", (e) => {
+      sortBy = e.target.value;
+      render();
+    });
+
+    document.getElementById("toggleViewBtn").addEventListener("click", (e) => {
+      isListMode = !isListMode;
+      gridEl.classList.toggle("list-mode", isListMode);
+      e.target.textContent = isListMode ? "☰ 리스트" : "⊞ 그리드";
+    });
+
+    document.querySelectorAll(".cat-btn[data-cat]").forEach(btn => {
       btn.addEventListener("click", () => {
-        document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".cat-btn[data-cat]").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         currentCategory = btn.dataset.cat;
         render();
