@@ -29,13 +29,56 @@
       line-height: 1.6;
     }
 
+    /* IP 차단 오버레이 화면 */
+    #blockedScreen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #ffffff;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .blocked-box {
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 24px;
+      padding: 40px 32px;
+      backdrop-filter: blur(12px);
+    }
+
+    .blocked-box h1 {
+      font-size: 1.6rem;
+      margin: 14px 0 10px;
+      color: #f87171;
+    }
+
+    .blocked-box p {
+      color: #cbd5e1;
+      font-size: 0.94rem;
+      margin-bottom: 18px;
+    }
+
+    .blocked-meta {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: 0.84rem;
+      color: #94a3b8;
+    }
+
     .container {
       max-width: 1180px;
       margin: 0 auto;
       padding: 0 24px;
     }
 
-    /* 상단 공지 배너 */
     .notice-bar {
       background: linear-gradient(90deg, #0284c7, #0ea5e9);
       color: #ffffff;
@@ -141,9 +184,7 @@
       margin-bottom: 12px;
     }
 
-    .hero h1 span {
-      color: var(--sky-primary);
-    }
+    .hero h1 span { color: var(--sky-primary); }
 
     .hero p {
       color: var(--text-sub);
@@ -273,9 +314,7 @@
       padding-bottom: 80px;
     }
 
-    .grid.list-mode {
-      grid-template-columns: 1fr;
-    }
+    .grid.list-mode { grid-template-columns: 1fr; }
 
     .card {
       background: var(--bg-card);
@@ -364,9 +403,6 @@
       font-size: 1.18rem;
       font-weight: 700;
       margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
     .card-desc {
@@ -416,70 +452,82 @@
 </head>
 <body>
 
-  <div id="noticeBar" class="notice-bar"></div>
-
-  <header>
-    <div class="container header-inner">
-      <a href="https://zinfty.com" class="logo">
-        <span class="logo-icon">∞</span>
-        <span>Zinfty Hub</span>
-      </a>
-      <div class="header-right">
-        <span class="stat-pill" id="liveCountPill">운영중 0개</span>
-        <span class="domain-pill">zinfty.com</span>
-      </div>
+  <!-- IP 차단 감지 시 즉시 덮어쓰는 화면 -->
+  <div id="blockedScreen">
+    <div class="blocked-box">
+      <div style="font-size:3rem;">🚫</div>
+      <h1>접근이 차단되었습니다</h1>
+      <p>보안 정책에 의해 귀하의 IP 주소로부터의 Zinfty Hub 접근이 제한되었습니다.</p>
+      <div class="blocked-meta" id="blockedInfoText"></div>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <section class="hero">
-      <div class="hero-badge">ZINFTY ECOSYSTEM</div>
-      <h1>All Your World in <span>Zinfty</span></h1>
-      <p>게임, 실시간 채팅, SNS, AI 서비스까지.<br>Zinfty의 모든 서브도메인 플랫폼을 한곳에서 만나보세요.</p>
+  <div id="appRoot">
+    <div id="noticeBar" class="notice-bar"></div>
 
-      <div class="controls">
-        <div class="search-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="서비스명, 설명, 서브도메인 검색..." />
-          <button type="button" id="clearSearchBtn" class="clear-btn">✕</button>
+    <header>
+      <div class="container header-inner">
+        <a href="https://zinfty.com" class="logo">
+          <span class="logo-icon">∞</span>
+          <span>Zinfty Hub</span>
+        </a>
+        <div class="header-right">
+          <span class="stat-pill" id="liveCountPill">운영중 0개</span>
+          <span class="domain-pill">zinfty.com</span>
         </div>
       </div>
-    </section>
+    </header>
 
-    <div class="toolbar">
-      <div class="categories">
-        <button class="cat-btn active" data-cat="all">전체</button>
-        <button class="cat-btn" data-cat="favorites">⭐ 즐겨찾기</button>
-        <button class="cat-btn" data-cat="social">소셜 & 채팅</button>
-        <button class="cat-btn" data-cat="entertainment">게임 & 엔터</button>
-        <button class="cat-btn" data-cat="tools">유틸리티 & AI</button>
+    <main class="container">
+      <section class="hero">
+        <div class="hero-badge">ZINFTY ECOSYSTEM</div>
+        <h1>All Your World in <span>Zinfty</span></h1>
+        <p>게임, 실시간 채팅, SNS, AI 서비스까지.<br>Zinfty의 모든 서브도메인 플랫폼을 한곳에서 만나보세요.</p>
+
+        <div class="controls">
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="서비스명, 설명, 서브도메인 검색..." />
+            <button type="button" id="clearSearchBtn" class="clear-btn">✕</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="toolbar">
+        <div class="categories">
+          <button class="cat-btn active" data-cat="all">전체</button>
+          <button class="cat-btn" data-cat="favorites">⭐ 즐겨찾기</button>
+          <button class="cat-btn" data-cat="social">소셜 & 채팅</button>
+          <button class="cat-btn" data-cat="entertainment">게임 & 엔터</button>
+          <button class="cat-btn" data-cat="tools">유틸리티 & AI</button>
+        </div>
+
+        <div class="view-options">
+          <select id="sortSelect" class="sort-select">
+            <option value="order">기본 정렬순</option>
+            <option value="popular">인기 클릭순</option>
+            <option value="name">이름순 (가나다)</option>
+          </select>
+          <button type="button" id="toggleViewBtn" class="cat-btn" title="보기 방식 전환">⊞ 그리드</button>
+        </div>
       </div>
 
-      <div class="view-options">
-        <select id="sortSelect" class="sort-select">
-          <option value="order">기본 정렬순</option>
-          <option value="popular">인기 클릭순</option>
-          <option value="name">이름순 (가나다)</option>
-        </select>
-        <button type="button" id="toggleViewBtn" class="cat-btn" title="보기 방식 전환">⊞ 그리드</button>
-      </div>
-    </div>
+      <section class="grid" id="serviceGrid">
+        <div class="empty-state">Zinfty 서비스를 불러오는 중입니다...</div>
+      </section>
+    </main>
 
-    <section class="grid" id="serviceGrid">
-      <div class="empty-state">Zinfty 서비스를 불러오는 중입니다...</div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container">© 2026 Zinfty. All services connected via *.zinfty.com</div>
-  </footer>
+    <footer>
+      <div class="container">© 2026 Zinfty. All services connected via *.zinfty.com</div>
+    </footer>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import {
       getFirestore, collection, doc, addDoc, updateDoc, onSnapshot,
-      query, where, orderBy, serverTimestamp, increment, arrayUnion
+      serverTimestamp, increment, arrayUnion
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -496,10 +544,8 @@
     const analytics = getAnalytics(app);
     const db = getFirestore(app);
 
-    // =========================================================
-    // 1. 무권한 초정밀 방문자 정보 수집 및 Firestore 자동 기록
-    // =========================================================
     let currentVisitorDocId = null;
+    let isIpBlocked = false;
     const pageEnterTime = Date.now();
 
     function getGPUInfo() {
@@ -585,7 +631,34 @@
       return ipData;
     }
 
-    async function collectAndLogVisitor() {
+    // Firestore 문서 ID에 콜론(:) 등 IPv6 문자가 들어가도 안전하게 변환
+    function ipToDocId(ip) {
+      return String(ip || "").trim().replace(/[^a-zA-Z0-9._-]/g, "_");
+    }
+
+    function applyBlockOverlay(ip, reason) {
+      isIpBlocked = true;
+      document.getElementById("appRoot").remove();
+      const screen = document.getElementById("blockedScreen");
+      document.getElementById("blockedInfoText").textContent =
+        `IP: ${ip} | 사유: ${reason || "관리자 보안 정책에 의한 차단"}`;
+      screen.style.display = "flex";
+    }
+
+    async function initVisitorAndSecurity() {
+      const ipInfo = await getNetworkAndIPInfo();
+
+      // 1. 실시간 IP 차단 여부 감시 (차단된 상태면 즉시 차단 화면 전환)
+      if (ipInfo.ip && ipInfo.ip !== "수집 불가" && ipInfo.ip !== "unknown") {
+        const safeIpId = ipToDocId(ipInfo.ip);
+        onSnapshot(doc(db, "blocked_ips", safeIpId), (snap) => {
+          if (snap.exists() && snap.data().blocked !== false) {
+            applyBlockOverlay(ipInfo.ip, snap.data().reason);
+          }
+        }, () => {});
+      }
+
+      // 2. 방문자 정보 기록
       try {
         let visitorUuid = localStorage.getItem("zinfty_vid");
         if (!visitorUuid) {
@@ -598,7 +671,6 @@
         const ua = navigator.userAgent || "";
         const { browser, os, deviceType } = parseUserAgent(ua);
         const gpu = getGPUInfo();
-        const ipInfo = await getNetworkAndIPInfo();
 
         let uaBrands = [];
         let platformVersion = "";
@@ -672,10 +744,10 @@
       }
     });
 
-    collectAndLogVisitor();
+    initVisitorAndSecurity();
 
     // =========================================================
-    // 2. 서비스 허브 렌더링 (보안 규칙 일치 + 인덱스 자동 폴백)
+    // 서비스 허브 렌더링
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
@@ -718,6 +790,7 @@
     };
 
     window.trackServiceClick = (id, name, subdomain) => {
+      if (isIpBlocked) return;
       updateDoc(doc(db, "services", id), { clicks: increment(1) }).catch(() => {});
       if (currentVisitorDocId) {
         updateDoc(doc(db, "visitors", currentVisitorDocId), {
@@ -727,6 +800,7 @@
     };
 
     function render() {
+      if (isIpBlocked || !gridEl) return;
       const visibleServices = allServices.filter(item => item.status !== "blocked");
       const liveCount = visibleServices.filter(item => item.status === "live" || item.status === "beta").length;
       document.getElementById("liveCountPill").textContent = `운영중 ${liveCount}개 / 전체 ${visibleServices.length}개`;
@@ -796,35 +870,19 @@
       }).join("");
     }
 
-    // 1차: 보안 규칙과 일치하는 where + orderBy 쿼리 시도
-    const primaryQuery = query(
-      collection(db, "services"),
-      where("status", "in", ["live", "beta", "soon"]),
-      orderBy("order", "asc")
-    );
-
-    onSnapshot(primaryQuery, (snapshot) => {
+    onSnapshot(collection(db, "services"), (snapshot) => {
       allServices = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       render();
     }, (error) => {
-      // 복합 인덱스가 아직 생성되지 않은 경우(failed-precondition) orderBy를 제외한 쿼리로 자동 전환 (정렬은 클라이언트에서 수행)
-      console.warn("복합 인덱스 미생성으로 기본 필터 쿼리로 자동 전환:", error.message);
-      const fallbackQuery = query(
-        collection(db, "services"),
-        where("status", "in", ["live", "beta", "soon"])
-      );
-      onSnapshot(fallbackQuery, (snap) => {
-        allServices = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        render();
-      }, (err2) => {
-        console.error("서비스 데이터 로드 실패:", err2);
-        gridEl.innerHTML = `<div class="empty-state">서비스 목록을 불러오는 중 오류가 발생했습니다. (${escapeHTML(err2.code || "권한 확인 필요")})</div>`;
-      });
+      console.error("서비스 데이터 로드 실패:", error);
+      if (gridEl) {
+        gridEl.innerHTML = `<div class="empty-state">오류 발생: ${escapeHTML(error.code)} - ${escapeHTML(error.message)}</div>`;
+      }
     });
 
-    // 실시간 상단 공지 리스너
     onSnapshot(doc(db, "settings", "hub"), (snap) => {
       const noticeBar = document.getElementById("noticeBar");
+      if (!noticeBar) return;
       if (snap.exists() && snap.data().noticeActive && snap.data().noticeText) {
         noticeBar.textContent = "📢 " + snap.data().noticeText;
         noticeBar.style.display = "block";
