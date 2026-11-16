@@ -118,10 +118,14 @@
       letter-spacing: -0.02em;
     }
 
-    .brand-logo-img {
-      height: 44px;
-      width: auto;
-      object-fit: contain;
+    /* 상단 헤더 정사각형 로고 */
+    .header-square-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      object-fit: cover;
+      border: 1px solid var(--border-color);
+      background: #ffffff;
       display: block;
     }
 
@@ -168,22 +172,26 @@
       padding: 48px 0 36px;
     }
 
+    /* 히어로 정사각형 로고 카드 */
     .hero-logo-wrap {
-      margin: 0 auto 14px;
-      display: inline-flex;
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 18px;
+      border-radius: 26px;
+      background: #ffffff;
+      border: 1.5px solid var(--border-color);
+      box-shadow: 0 12px 28px rgba(14, 165, 233, 0.14);
+      overflow: hidden;
+      display: flex;
       align-items: center;
       justify-content: center;
-      background: #ffffff;
-      padding: 12px 26px;
-      border-radius: 22px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.1);
     }
 
     .hero-logo-wrap img {
-      height: 76px;
-      width: auto;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .hero h1 {
@@ -360,11 +368,13 @@
       margin-bottom: 16px;
     }
 
+    /* 서비스 카드 1:1 정사각형 로고 영역 (여백 없이 꽉 채움) */
     .card-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 14px;
-      background: var(--sky-soft);
+      width: 56px;
+      height: 56px;
+      aspect-ratio: 1 / 1;
+      border-radius: 15px;
+      background: #ffffff;
       border: 1px solid var(--border-color);
       display: flex;
       align-items: center;
@@ -372,6 +382,7 @@
       font-size: 1.55rem;
       overflow: hidden;
       flex-shrink: 0;
+      padding: 0;
     }
 
     .card-icon img {
@@ -487,7 +498,8 @@
     <header>
       <div class="container header-inner">
         <a href="https://zinfty.com" class="logo">
-          <img src="./logo.png" alt="Zinfty Logo" class="brand-logo-img" />
+          <img src="./logo.png" alt="Zinfty" class="header-square-logo" />
+          <span>Zinfty</span>
           <span class="hub-tag">HUB</span>
         </a>
         <div class="header-right">
@@ -500,7 +512,7 @@
     <main class="container">
       <section class="hero">
         <div class="hero-logo-wrap">
-          <img src="./logo.png" alt="Zinfty Ecosystem" />
+          <img src="./logo.png" alt="Zinfty Logo" />
         </div>
         <h1>All Your World in <span>Zinfty</span></h1>
         <p>게임, 실시간 채팅, SNS, AI 서비스까지.<br>Zinfty의 모든 서브도메인 플랫폼을 한곳에서 만나보세요.</p>
@@ -765,7 +777,7 @@
     initVisitorAndSecurity();
 
     // =========================================================
-    // 서비스 허브 렌더링 (첨부된 로고 이미지 & 기존 이모지 모두 지원)
+    // 서비스 허브 렌더링 (정사각형 꽉 찬 로고 적용)
     // =========================================================
     let allServices = [];
     let currentCategory = "all";
@@ -795,16 +807,15 @@
       return "#";
     }
 
-    // 서비스 로고 이미지 렌더링 헬퍼 (업로드 이미지 Base64, https URL, 또는 폴백 로고)
     function renderServiceLogo(item) {
-      const imgSrc = item.iconImage || "";
+      const imgSrc = (item.iconImage || "").trim();
       if (imgSrc.startsWith("data:image/") || imgSrc.startsWith("https://")) {
         return `<img src="${escapeHTML(imgSrc)}" alt="${escapeHTML(item.name)}" />`;
       }
-      if (item.icon) {
+      if (item.icon && item.icon.trim() !== "") {
         return escapeHTML(item.icon);
       }
-      return `<img src="./logo.png" alt="Zinfty" style="padding:8px; object-fit:contain;" />`;
+      return `<img src="./logo.png" alt="Zinfty" />`;
     }
 
     window.toggleFavorite = (e, id) => {
